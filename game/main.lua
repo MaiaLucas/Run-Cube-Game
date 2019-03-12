@@ -4,6 +4,9 @@ local died = false
 
 local level = 2
 local velocityLevel = level*0.5
+local randomTimer = math.random( 3500, 10000 )
+
+local obstacleTable = {}
 
 -- Show Background Level 1
 local backgroundLevel1 = display.newImageRect("background.jpg", 720, 480)
@@ -37,17 +40,14 @@ local physics = require("physics")
 physics.start()
 physics.addBody( floor, "static" )
 physics.addBody( sky, "static" )
+physics.addBody( cube, "dynamic", { radius=20, bounce=-0.1 } )
+physics.setDrawMode("hybrid")
 
 --------------- Functions ---------------
 local function updateText()
     score = score + 1
-    scoreText.text = "Score: " .. score
+    scoreText.text = "Score: " .. score .. " m"
 end
-
--- local function pushCube()
---     cube:applyLinearImpulse( 0, -0.091, cube.x, cube.y )
--- end
-
 
 local spawnTimer = timer.performWithDelay( 500, updateText, -1 )
 local spawnedObjects = {}
@@ -57,37 +57,30 @@ math.randomseed( os.time() )
  local function createObstacles() 
 
     local newObstacle
-    local randomHeight = math.random( 70, 120 )
-    local randomRadius = randomHeight/2
-    -- Obstacles on bottom
-     local whereFrom = math.random( 3 )
+    -- local randomHeight = math.random( 50, 100 )
+    -- local randomRadius = randomHeight/2
+
+    table.insert( obstacleTable, newObstacle )
+    local whereFrom = math.random( 3 )
     whereFrom = 1
 
     if ( whereFrom == 1 ) then
         -- From the bottom 
-        newObstacle = display.newImageRect("obstacle-1.png", 100, randomHeight )
-        physics.addBody( newObstacle, "dynamic", { radius = randomRadius, bounce = 0 } )
-        print(randomHeight)
-        print(randomRadius)
+        newObstacle = display.newImageRect("obstacle-1.png", 90, 100 )
+        physics.addBody( newObstacle, "dynamic", { bounce = 0 } )
         newObstacle.gravityScale = 0
         newObstacle.myName = "obstacle"
 
         newObstacle.x = display.contentWidth+150
-        newObstacle.y = display.contentHeight-(randomRadius + 20)
+        newObstacle.y = display.contentHeight-50
         newObstacle:setLinearVelocity( -100*velocityLevel , 0 )
-    -- elseif ( whereFrom == 2 ) then
-    --     -- From the top
-    --     newObstacle.x = math.random( display.contentWidth )
-    --     newObstacle.y = -60
-    --     newObstacle:setLinearVelocity( 10 , 0 )
-    -- elseif ( whereFrom == 3 ) then
-    --     -- From the right
-    --     newObstacle.x = display.contentWidth + 60
-    --     newObstacle.y = math.random( 500 )
-    --     newObstacle:setLinearVelocity( 10 , 0 )
-     end
+    elseif ( whereFrom == 2 ) then
+        -- From the top
+    elseif ( whereFrom == 3 ) then
+        -- From the middle
+    end
 
- end 
+end 
 
 ---- Start game
 -- local function pushCube(event)
@@ -98,10 +91,8 @@ math.randomseed( os.time() )
 --     if( "began" == phase ) then
 --         display.currentStage:setFocus( cube )
 --         cube.touchOffsetY = event.y - cube.y
---         --cube:applyLinearImpulse( 0, -0.75, cube.x, cube.y )
 
 --     elseif( "moved" == phase ) then
---         --cube.y = event.y - cube.touchOffsetY
 --         cube:applyLinearImpulse( 0, -0.75, cube.x, cube.y )
 
 --     elseif( "ended" == phase or "canceled" == pahse ) then
@@ -113,18 +104,30 @@ math.randomseed( os.time() )
 
 local function pushCube()
     cube:applyLinearImpulse( 0, -0.10, cube.x, cube.y )
+
 end
 
-
-physics.addBody( cube, "dynamic", { radius=15, bounce=-0.1 } )
 backgroundLevel1:addEventListener( "tap", pushCube )
 
 ---- Game looping
 local function gameLoop()
     createObstacles()
+
+    for i = #obstacleTable, 1, -1 do
+        local thisObstacle = obstacleTable[i]
+ 
+        if ( thisObstacle.x < -100 or
+             thisObstacle.x > display.contentWidth + 100 or
+             thisObstacle.y < -100 or
+             thisObstacle.y > display.contentHeight + 100 )
+        then
+            display.remove( thisObstacle )
+            table.remove( obstacleTable, i )
+        end
+    end
 end
 
-gameLoopTimer = timer.performWithDelay( 500, gameLoop, 0 )
+gameLoopTimer = timer.performWithDelay( randomTimer, gameLoop, 0 )
 
  local function restoreCube()
  
@@ -163,11 +166,4 @@ local function onCollision( event )
 
 end
 
-
 Runtime:addEventListener( "collision", onCollision )
-
-
-
- 
-
-
