@@ -107,24 +107,24 @@ backgroundLevel1:addEventListener( "tap", pushCube )
 local function gameLoop()
     createObstacles()
 
-    -- for i = #obstacleTable, 10, -1 do
-    --     local thisObstacle = obstacleTable[i]
+    for i = #obstacleTable, 10, -1 do
+        local thisObstacle = obstacleTable[i]
  
-    --     if ( thisObstacle.x < -100 or
-    --          thisObstacle.x > display.contentWidth + 100 or
-    --          thisObstacle.y < -100 or
-    --          thisObstacle.y > display.contentHeight + 100 )
-    --     then
-    --         display.remove( thisObstacle )
-    --         table.remove( obstacleTable, i )
+        if ( thisObstacle.x < -100 or
+             thisObstacle.x > display.contentWidth + 100 or
+             thisObstacle.y < -100 or
+             thisObstacle.y > display.contentHeight + 100 )
+        then
+            display.remove( thisObstacle )
+            table.remove( obstacleTable, i )
             
-    --     end
-    -- end
+        end
+    end
 
     return true
 end
 
-gameLoopTimer = timer.performWithDelay( 1000*velocityLevel, gameLoop, 0 )
+gameLoopTimer = timer.performWithDelay( 10000, gameLoop, 0 )
 
 -- gameLoopTimer = timer.performWithDelay( 5000, gameLoop, 0 )
 
