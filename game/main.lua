@@ -14,7 +14,8 @@ backgroundLevel1.y = display.contentCenterY
 
 -- Score bar
 local uiGroup = display.newGroup()
-scoreText = display.newText( uiGroup, "Score: " .. score, 10, 20, native.systemFont, 0 )
+scoreText = display.newText( uiGroup, score, 0, 20, native.systemFont, 20 )
+scoreText:setFillColor( 0,0,0 )
 display.setStatusBar( display.HiddenStatusBar )
 
 -- Set floor and sky limit
@@ -45,40 +46,59 @@ physics.setDrawMode("hybrid")
 --------------- Functions ---------------
 local function updateText()
     score = score + 1
-    scoreText.text = "Score: " .. score .. " m"
+    scoreText.text = score .. " m"
 end
 
-local spawnTimer = timer.performWithDelay( 500, updateText, -1 )
+local spawnTimer = timer.performWithDelay( 500*velocityLevel, updateText, -1 )
 
 local spawnedObjects = {}
-local newObstacle
 math.randomseed( os.time() )
+
+local sheetOptions = { width = 150, height = 75, numFrames = 4 }
+local sequences = {
+    {
+        name = "normalRun",
+        start = 1,
+        count = 4,
+        time = 400,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
 
 ---- Create obstacles
  local function createObstacles() 
 
-    table.insert( obstacleTable, newObstacle )
     local whereFrom = math.random( 2 )
-    whereFrom = 1
-     
+    whereFrom = 2
+    
     local timing = math.random( 1500, 90000 )
 
     print(timing)
 
     if ( whereFrom == 1 ) then
-        -- From the bottom 
-        newObstacle = display.newImageRect("obstacle-1.png", 90, 100 )
+        -- From the bottom  
+        local tree = display.newImageRect("obstacle-1.png", 90, 100 )
         physics.addBody( newObstacle, "dynamic", { bounce = 0 } )
-        newObstacle.gravityScale = 10
-        newObstacle.myName = "obstacle"
+        tree.gravityScale = 10
+        tree.myName = "tree"
 
-        newObstacle.x = display.contentWidth+150
-        newObstacle.y = display.contentHeight-50
-        newObstacle:setLinearVelocity( -80*velocityLevel, 0 )
+        tree.x = display.contentWidth+150
+        tree.y = display.contentHeight-50
+        tree:setLinearVelocity( -80*velocityLevel, 0 )
+
+        table.insert( obstacleTable, tree )
 
     elseif ( whereFrom == 2 ) then
-        -- From the top and middle
+        -- From the top and middle 
     end
+
+    local bird = display.newImageSheet( "obstacle-2.png", sheetOptions )
+        local player = display.newSprite( newObstacle, sequences )
+        player.x = display.contentWidth
+        player.y = display.contentHeight-(math.random( 70, 100 ))
+        player:rotate(90)
+        player:play()
 
 end 
 
@@ -118,7 +138,7 @@ local function gameLoop()
     return true
 end
 
-gameLoopTimer = timer.performWithDelay( math.random(1500, 90000), gameLoop )
+gameLoopTimer = timer.performWithDelay( 500, gameLoop )
 
  local function restartGame()
  
