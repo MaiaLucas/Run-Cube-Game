@@ -51,66 +51,51 @@ end
 
 local spawnTimer = timer.performWithDelay( 500*velocityLevel, updateText, -1 )
 
-local spawnedObjects = {}
 math.randomseed( os.time() )
-
-local sheetOptions = { width = 150, height = 75, numFrames = 4 }
-local sequences = {
-    {
-        name = "normalRun",
-        start = 1,
-        count = 4,
-        time = 400,
-        loopCount = 0,
-        loopDirection = "forward"
-    }
-}
 
 ---- Create obstacles
  local function createObstacles() 
 
     local whereFrom = math.random( 2 )
-    whereFrom = 2
-    
-    local timing = math.random( 1500, 90000 )
+    whereFrom = 1
 
-    print(timing)
+    local newObstacle
 
     if ( whereFrom == 1 ) then
         -- From the bottom  
-        local tree = display.newImageRect("obstacle-1.png", 90, 100 )
+        newObstacle = display.newImageRect("obstacle-1.png", 90, 100 )
         physics.addBody( newObstacle, "dynamic", { bounce = 0 } )
-        tree.gravityScale = 10
-        tree.myName = "tree"
+        newObstacle.gravityScale = 10
+        newObstacle.myName = "obstacle"
 
-        tree.x = display.contentWidth+150
-        tree.y = display.contentHeight-50
-        tree:setLinearVelocity( -80*velocityLevel, 0 )
+        newObstacle.x = display.contentWidth+150
+        newObstacle.y = display.contentHeight-50
+        newObstacle:setLinearVelocity( -100*velocityLevel, 0 )
 
-        table.insert( obstacleTable, tree )
+        table.insert( obstacleTable, newObstacle )
 
     elseif ( whereFrom == 2 ) then
         -- From the top and middle 
     end
 
-    local bird = display.newImageSheet( "obstacle-2.png", sheetOptions )
-        local player = display.newSprite( newObstacle, sequences )
-        player.x = display.contentWidth
-        player.y = display.contentHeight-(math.random( 70, 100 ))
-        player:rotate(90)
-        player:play()
+    -- local bird = display.newImageSheet( "obstacle-2.png", sheetOptions )
+    --     local player = display.newSprite( newObstacle, sequences )
+    --     player.x = display.contentWidth
+    --     player.y = display.contentHeight-(math.random( 70, 100 ))
+    --     player:rotate(90)
+    --     player:play()
 
 end 
 
 local function pushCube( event )
 
-    local phase = event.phase
+    -- local phase = event.phase
 
-    if( "began" == phase ) then
-        display.currentStage:setFocus( cube )
-    elseif( "ended" == phase or "canceled" == phase ) then
-        display.currentStage:setFocus( nil )
-    end
+    -- if( "began" == phase ) then
+    --     display.currentStage:setFocus( cube )
+    -- elseif( "ended" == phase or "canceled" == phase ) then
+    --     display.currentStage:setFocus( nil )
+    -- end
 
     cube:applyLinearImpulse( 0, -0.05, cube.x, cube.y )
 
@@ -122,39 +107,44 @@ backgroundLevel1:addEventListener( "tap", pushCube )
 local function gameLoop()
     createObstacles()
 
-    for i = #obstacleTable, 1, -1 do
-        local thisObstacle = obstacleTable[i]
+    -- for i = #obstacleTable, 10, -1 do
+    --     local thisObstacle = obstacleTable[i]
  
-        if ( thisObstacle.x < -100 or
-             thisObstacle.x > display.contentWidth + 100 or
-             thisObstacle.y < -100 or
-             thisObstacle.y > display.contentHeight + 100 )
-        then
-            display.remove( thisObstacle )
-            table.remove( obstacleTable, i )
-        end
-    end
+    --     if ( thisObstacle.x < -100 or
+    --          thisObstacle.x > display.contentWidth + 100 or
+    --          thisObstacle.y < -100 or
+    --          thisObstacle.y > display.contentHeight + 100 )
+    --     then
+    --         display.remove( thisObstacle )
+    --         table.remove( obstacleTable, i )
+            
+    --     end
+    -- end
 
     return true
 end
 
-gameLoopTimer = timer.performWithDelay( 500, gameLoop )
+gameLoopTimer = timer.performWithDelay( 1000*velocityLevel, gameLoop, 0 )
 
- local function restartGame()
+-- gameLoopTimer = timer.performWithDelay( 5000, gameLoop, 0 )
+
+local function restartGame()
  
     -- cube.isBodyActive = false
     -- cube.x = display.contentCenterX-200
     -- cube.y = display.contentCenterY+100
-
-    score = 0
+    cube.isBodyActive = true
     died = false
+    score = 0
+
     -- Fade in the cube
-    -- transition.to( cube, { alpha=1, time=4000,
-    --     onComplete = function()
-    --         cube.isBodyActive = true
-    --         died = false
-    --     end
-    -- } )
+    transition.to( cube, { alpha=1, time=4000,
+        onComplete = function()
+            cube.isBodyActive = true
+            died = false
+            score = 0
+        end
+    } )
 
 end
 
@@ -172,7 +162,15 @@ local function onCollision( event )
                 died = true
                 --display.remove( cube )
                 cube.alpha = 0
-                timer.performWithDelay( 1000, restartGame )
+                timer.performWithDelay( 100, 
+                    transition.to( cube, { alpha=1, time=4000,
+                            onComplete = function()
+                                cube.isBodyActive = true
+                                died = false
+                                score = 0
+                            end
+                    } ) 
+                )
             end
         end
     end
