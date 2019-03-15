@@ -6,6 +6,7 @@ local died = false
 local level = 1
 local velocityLevel = level*0.5
 
+local spawnTimer
 local obstacleTable = {}
 
 
@@ -147,16 +148,17 @@ local function gameLoop()
     -- pauseObstacle = true
     -- delayLevelTimer = timer.performWithDelay( 1000/velocityLevel, gameLoop, 0 )
         print(#obstacleTable)
+    if( #obstacleTable ~= 0 ) then
+        for i = #obstacleTable, 1, -1  do
+            local thisObstacle = obstacleTable[i]
 
-    for i = #obstacleTable, 1, -1  do
-        local thisObstacle = obstacleTable[i]
-
-        if ( thisObstacle.x < -100 or thisObstacle.x > display.contentWidth + 100 )
-        then
-            --print("teste1 " .. thisObstacle)
-            display.remove( thisObstacle )
-            table.remove( obstacleTable, i )
-            print(#obstacleTable .. "removeu")
+            if ( thisObstacle.x < -100 or thisObstacle.x > display.contentWidth + 100 )
+            then
+                --print("teste1 " .. thisObstacle)
+                display.remove( thisObstacle )
+                table.remove( obstacleTable, i )
+                print(#obstacleTable .. "removeu")
+            end
         end
     end
 
@@ -177,8 +179,8 @@ local function onCollision( event )
         timer.cancel(scoreLoop)
         timer.cancel(gameLoopTimer)
 
-        display.remove( obj1 )
-        display.remove( obj2 )
+        -- display.remove( obj1 )
+        -- display.remove( obj2 )
 
         local text = display.newText("scores: " .. score, display.contentCenterX, 100, native.systemFont, 50)
     end
