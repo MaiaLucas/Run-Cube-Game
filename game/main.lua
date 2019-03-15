@@ -4,14 +4,14 @@ local scoreLoop
 local died = false
 
 local level = 1
-local velocityLevel = level*0.05
+local velocityLevel = level*0.5
 
 local obstacleTable = {}
 
 
 math.randomseed( os.time() )
 -- Show Background Level 1
-local backgroundLevel1 = display.newImageRect("background_level2.jpg", 700, 380)
+local backgroundLevel1 = display.newImageRect("background.jpg", 700, 380)
 backgroundLevel1.x = display.contentCenterX
 backgroundLevel1.y = display.contentCenterY
 
@@ -55,11 +55,31 @@ local function pushCube()
 end
 backgroundLevel1:addEventListener( "tap", pushCube )
 
+local sheetOptions =
+{
+    width = 950,
+    height = 1250,
+    numFrames = 4,
+}
+
+local sequences = {
+    -- consecutive frames sequence
+    {
+        name = "normalRun",
+        start = 1,
+        count = 4,
+        time = 300,
+        loopCount = 0,
+        loopDirection = "forward"
+    }
+}
+
 ---- Create obstacles
 local function createObstacles()
 
     local whereFrom = math.random( 2 )
-    whereFrom = 1
+
+    gameLoopTimer = timer.performWithDelay( 5000, whereFrom, -1 )
 
     if ( whereFrom == 1 ) then
         -- From the bottom
@@ -71,9 +91,25 @@ local function createObstacles()
         newObstacle.y = display.contentHeight-50
         newObstacle:setLinearVelocity( -100*velocityLevel, 0 )
 
-        table.insert( obstacleTable, newObstacle )
+        obstacleTable[#obstacleTable+1] = newObstacle
+
+    elseif( whereFrom == 2 ) then
+        local obstacle2 = graphics.newImageSheet( "obstacle-2.png", sheetOptions )
+        local newObstacle2 = display.newSprite( obstacle2, sequences )
+        physics.addBody( newObstacle2, "dynamic", { radius = 25, bounce = 0 } )
+        newObstacle2.gravityScale = 0
+        newObstacle2.myName = "obstacle"
+        newObstacle2.x = display.contentWidth+100
+        newObstacle2.y = display.contentHeight-math.random(150, 300 )
+        newObstacle2:scale(0.1, 0.1)
+        newObstacle2:play()
+        newObstacle2:setLinearVelocity( -100*velocityLevel, 0 )
+
+        obstacleTable[#obstacleTable+1] = newObstacle2
+        --table.insert( obstacleTable, newObstacle2 )
     end
 
+    
 end 
 
 ---- Game looping
@@ -83,63 +119,6 @@ local function startGameLoop()
     pauseObstacle = false
 end
 
-local function gameLoop()
-    
-    --if( not pauseObstacle ) then
-        print("entrou")
-        createObstacles()
-    --end
-
-    print("teste")
-    --level = level + 1
-    timer.cancel(gameLoopTimer)
-    --velocityLevel = level*0.5
-
-    --delayLevelTimer = timer.performWithDelay( 1000, startGameLoop, 1 )
-    pauseObstacle = true
-    delayLevelTimer = timer.performWithDelay( 1000/velocityLevel, gameLoop, 0 )
-
-
-    for i = #obstacleTable, -1 do
-        local thisObstacle = obstacleTable[i]
- 
-        if ( thisObstacle.x < -100 or
-             thisObstacle.x > display.contentWidth + 100 or
-             thisObstacle.y < -100 or
-             thisObstacle.y > display.contentHeight + 100 )
-        then
-            display.remove( thisObstacle )
-            table.remove( obstacleTable, i )
-            
-        end
-    end
-
-    return true
-end
-
-gameLoopTimer = timer.performWithDelay( 1000/velocityLevel, gameLoop, 0 )
-
-local function onCollision( event )
-    
-        local obj1 = event.object1
-        local obj2 = event.object2
-        
-
-        if ( ( obj1.myName == "cube" and obj2.myName == "obstacle" ) or ( obj1.myName == "obstacle" and obj2.myName == "cube" ) ) then
-
-            if ( died == false ) then
-                timer.cancel(gameLoopTimer)
-                timer.cancel(scoreLoop)
-                died = true
-                cube.alpha = 0
-
-                local text = display.newText("Game Over scores: " .. score, display.contentCenterX, 100, native.systemFont, 50)
-            end
-        end
-
-end
-
-Runtime:addEventListener( "collision", onCollision )
 
 local function updateText()
     score = score + 1
@@ -147,6 +126,66 @@ local function updateText()
     
 end
 
-scoreLoop = timer.performWithDelay( 10000*velocityLevel, updateText, -1 )
+scoreLoop = timer.performWithDelay( 1000, updateText, -1 )
+
+local function gameLoop()
+
+    createObstacles()
+    
+    -- if( not pauseObstacle ) then
+    --     print("entrou")
+    --     createObstacles()
+    -- end
+
+    -- print("teste")
+
+    -- level = level + 1
+    -- --timer.cancel(gameLoopTimer)
+    -- --velocityLevel = level*0.5
+
+    -- delayLevelTimer = timer.performWithDelay( 1000, startGameLoop, 1 )
+    -- pauseObstacle = true
+    -- delayLevelTimer = timer.performWithDelay( 1000/velocityLevel, gameLoop, 0 )
+        print(#obstacleTable)
+
+    for i = #obstacleTable, 1, -1  do
+        local thisObstacle = obstacleTable[i]
+
+        if ( thisObstacle.x < -100 or thisObstacle.x > display.contentWidth + 100 )
+        then
+            --print("teste1 " .. thisObstacle)
+            display.remove( thisObstacle )
+            table.remove( obstacleTable, i )
+            print(#obstacleTable .. "removeu")
+        end
+    end
+
+    return true
+end
+
+gameLoopTimer = timer.performWithDelay( 5000, gameLoop, 0 )
+
+local function onCollision( event )
+ 
+    local obj1 = event.object1
+    local obj2 = event.object2
+        
+    if ( ( obj1.myName == "cube" and obj2.myName == "obstacle" ) or 
+         ( obj1.myName == "obstacle" and obj2.myName == "cube" ) ) then
+
+        --
+        timer.cancel(scoreLoop)
+        timer.cancel(gameLoopTimer)
+
+        display.remove( obj1 )
+        display.remove( obj2 )
+
+        local text = display.newText("scores: " .. score, display.contentCenterX, 100, native.systemFont, 50)
+    end
+
+end
+
+Runtime:addEventListener( "collision", onCollision )
+
 
 
