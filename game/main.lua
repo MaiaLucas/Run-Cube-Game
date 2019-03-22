@@ -15,12 +15,15 @@ local score = 0
 local scoreText
 local scoreLoop
 
+local scenes
+
 local level = 1
 local velocityLevel = level*0.5
 local updateLevel
 
 local extraPointTable = {}
 local obstacleTable = {}
+local scenesTable = {}
 
 math.randomseed( os.time() )
 -- Show Background Level 1
@@ -55,7 +58,7 @@ physics.addBody( sky, "static" )
 local square = display.newImageRect("images/quadrado.png", 30, 30)
 square.x = display.contentCenterX-200
 square.y = display.contentCenterY+100
---square.myName = "square"
+square.myName = "square"
 physics.addBody( square, "dynamic", { bounce=-0.1 } )
 
 --------------- Functions ---------------
@@ -81,7 +84,7 @@ local function createObstacles()
     if ( whereFrom == 1 ) then
         -- Retangle
         local newObstacle = display.newImageRect("images/obstaculo-1.png", 45, 95 )
-        physics.addBody( newObstacle, "dynamic", { bounce = 0, isSensor = false } )
+        physics.addBody( newObstacle, "dynamic", { bounce = 0, isSensor = true } )
         newObstacle.gravityScale = 10
         newObstacle.myName = "obstacle"
         newObstacle.x = display.contentWidth+100
@@ -122,12 +125,13 @@ end
 local function extraPoint()
 
     local whereFrom = math.random( 2 )
+    local extra
 
     if ( whereFrom == 1 ) then
         -- Triangle
-        local extra = display.newImageRect("images/pontos-extras-1.png", 40, 40 )
+        extra = display.newImageRect("images/pontos-extras-1.png", 40, 40 )
         physics.addBody( extra, "dynamic", { bounce = 0, isSensor = true } )
-        extra.gravityScale = 0
+        extra.gravityScale = 10
         extra.myName = "extra"
         extra.x = display.contentWidth+100
         extra.y = display.contentHeight-math.random( 50, 200 )
@@ -137,7 +141,7 @@ local function extraPoint()
 
     elseif( whereFrom == 2 ) then
         -- Circle
-        local extra = display.newImageRect( "images/pontos-extras-2.png", 40, 40 )
+        extra = display.newImageRect( "images/pontos-extras-2.png", 40, 40 )
         physics.addBody( extra, "dynamic", { bounce = 0, isSensor = true } )
         extra.gravityScale = 0
         extra.myName = "extra"
@@ -146,18 +150,35 @@ local function extraPoint()
         extra:setLinearVelocity( -100*velocityLevel, -10 )
 
         extraPointTable[#extraPointTable+1] = extra
-    
     end
 
 end
 
+---- Background movimentation 
+local function backgroundMoviment()
+    local nuvem = display.newImageRect("images/nuvem.png", 95, 55 )
+    physics.addBody( nuvem, "dynamic", { bounce = 0, isSensor = true } )
+    nuvem.gravityScale = 0
+    nuvem.myName = "nuvem"
+    nuvem.x = display.contentWidth+100
+    nuvem.y = display.contentHeight-math.random(150, 200)
+    nuvem.alpha = 0.5
+    nuvem:setLinearVelocity( -50, 0 )
+
+    square:toFront()
+
+    scenesTable[#scenesTable+1] = nuvem
+end
+
+scenes = timer.performWithDelay( 5500, backgroundMoviment, -1 )
+
 ---- Game looping
-local function updateMeters()
+local function updateDistance()
     meters = meters + 1
     metersText.text = meters .. " m"  
 end
 
-metersLoop = timer.performWithDelay( 2000*velocityLevel, updateMeters, -1 )
+metersLoop = timer.performWithDelay( 2000*velocityLevel, updateDistance, -1 )
 
 local function gameLoop()
 
@@ -175,7 +196,6 @@ local function gameLoop()
         end
     end
 
-    
     if( #extraPointTable ~= 0 ) then
         for i = #extraPointTable, 1, -1  do
             local thisExtraPoint = extraPointTable[i]
@@ -188,11 +208,24 @@ local function gameLoop()
         end
     end
 
+    if( #scenesTable ~= 0 ) then
+        for i = #scenesTable, 1, -1  do
+            local thisScenes = scenesTable[i]
+
+            if ( thisScenes.x < -100 or thisScenes.x > display.contentWidth + 100 )
+            then
+                display.remove( thisScenes )
+                table.remove( scenesTable, i )
+                thisScenes:toFront()
+            end
+        end
+    end
+
     return true
 end
 
 scoreLoop = timer.performWithDelay( 10000, extraPoint, 0 )
-gameLoopTimer = timer.performWithDelay( 5000*velocityLevel, gameLoop, 0 )
+gameLoopTimer = timer.performWithDelay( 10000 - 500*velocityLevel, gameLoop, 0 )
 
 local function onCollision( event )
  
