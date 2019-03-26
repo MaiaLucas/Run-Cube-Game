@@ -84,7 +84,7 @@ local function createObstacles()
     if ( whereFrom == 1 ) then
         -- Retangle
         local newObstacle = display.newImageRect("images/obstaculo-1.png", 45, 95 )
-        physics.addBody( newObstacle, "dynamic", { bounce = 0, isSensor = true } )
+        physics.addBody( newObstacle, "dynamic", { bounce = 0, isSensor = false } )
         newObstacle.gravityScale = 10
         newObstacle.myName = "obstacle"
         newObstacle.x = display.contentWidth+100
@@ -155,7 +155,8 @@ local function extraPoint()
 end
 
 ---- Background movimentation 
-local function backgroundMoviment()
+local function cloudMoviment()
+
     local nuvem = display.newImageRect("images/nuvem.png", 95, 55 )
     physics.addBody( nuvem, "dynamic", { bounce = 0, isSensor = true } )
     nuvem.gravityScale = 0
@@ -163,14 +164,28 @@ local function backgroundMoviment()
     nuvem.x = display.contentWidth+100
     nuvem.y = display.contentHeight-math.random(150, 200)
     nuvem.alpha = 0.5
-    nuvem:setLinearVelocity( -50, 0 )
-
-    square:toFront()
+    nuvem:setLinearVelocity( -100, 0 )
 
     scenesTable[#scenesTable+1] = nuvem
+
 end
 
-scenes = timer.performWithDelay( 5500, backgroundMoviment, -1 )
+local function grassMoviment()
+
+    local grass = display.newImageRect("images/grass.png", 15, 55 )
+    physics.addBody( grass, "dynamic", { bounce = 0, isSensor = true } )
+    grass.gravityScale = 0
+    grass.myName = "nuvem"
+    grass.x = display.contentWidth+100
+    grass.y = 288
+    grass.alpha = 0.5
+    grass:setLinearVelocity( -100, 0 )
+
+    scenesTable[#scenesTable+1] = grass
+
+end
+scenes = timer.performWithDelay( 150, grassMoviment, -1 )
+scenes = timer.performWithDelay( 3000, cloudMoviment, -1 )
 
 ---- Game looping
 local function updateDistance()
@@ -178,7 +193,7 @@ local function updateDistance()
     metersText.text = meters .. " m"  
 end
 
-metersLoop = timer.performWithDelay( 2000*velocityLevel, updateDistance, -1 )
+metersLoop = timer.performWithDelay( 500/velocityLevel, updateDistance, -1 )
 
 local function gameLoop()
 
@@ -224,8 +239,8 @@ local function gameLoop()
     return true
 end
 
-scoreLoop = timer.performWithDelay( 10000, extraPoint, 0 )
-gameLoopTimer = timer.performWithDelay( 10000 - 500*velocityLevel, gameLoop, 0 )
+scoreLoop = timer.performWithDelay( 9000*velocityLevel, extraPoint, 0 )
+gameLoopTimer = timer.performWithDelay( 5000-(500/velocityLevel), gameLoop, 0 )
 
 local function onCollision( event )
  
@@ -258,6 +273,7 @@ local function onCollision( event )
         timer.cancel(metersLoop)
         timer.cancel(scoreLoop)
         timer.cancel(updateLevel)
+        timer.cancel(scenes)
 
         display.remove( obj1 )
         display.remove( obj2 )
