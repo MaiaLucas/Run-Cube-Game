@@ -27,6 +27,10 @@ local bgAnoitecer
 local bgNoite
 local bgChange
 
+local retangle
+local trapeze
+local parallelogram
+
 local fullLife -- full life
 local life3 -- 3/4 life
 local halfLife -- half life
@@ -127,43 +131,46 @@ end
 
 local function createObstacle()
     local whereFrom = math.random( 3 )
-    whereFrom = 1
+    -- whereFrom = 1
+
     if( whereFrom == 1 ) then 
-        local retangle = display.newImageRect("images/obstaculo-5.png", 45, 95 )
+
+        retangle = display.newImageRect("images/obstaculo-5.png", 45, 95 )
         physics.addBody( retangle, "dynamic", { isSensor = true } )
         retangle.gravityScale = 0
-        retangle.myName = "obstacle"
+        retangle.myName       = "obstacle"
 
         retangle.x = W+100
         retangle.y = H-70
-        retangle:setLinearVelocity( -100*velocity, 0 )
+        retangle:setLinearVelocity( -150, 0 )
 
         sceneGroup:insert(retangle)
         obstacleTable[#obstacleTable+1] = retangle
 
     elseif( whereFrom == 2 ) then
-        local trapeze = display.newImageRect( "images/obstaculo-4.png", 60, 40 )
+
+        trapeze = display.newImageRect( "images/obstaculo-4.png", 60, 40 )
         physics.addBody( trapeze, "dynamic", { isSensor = true } )
         trapeze.gravityScale = 0
-        trapeze.myName = "obstacle"
+        trapeze.myName       = "obstacle"
 
         trapeze.x = W+100
         trapeze.y = H-150
-        trapeze:setLinearVelocity( -150*velocity, 0 )
+        trapeze:setLinearVelocity( -150, 0 )
 
         sceneGroup:insert(trapeze)
         obstacleTable[#obstacleTable+1] = trapeze
 
     elseif( whereFrom == 3 ) then
-        -- Parallelogram
-        local parallelogram = display.newImageRect( "images/obstaculo-3.png", 50, 80 )
+
+        parallelogram = display.newImageRect( "images/obstaculo-3.png", 50, 80 )
         physics.addBody( parallelogram, "dynamic", { radius = 25, isSensor = true } )
         parallelogram.gravityScale = 0
-        parallelogram.myName = "obstacle"
+        parallelogram.myName       = "obstacle"
 
         parallelogram.x = W+100
         parallelogram.y = H-250
-        parallelogram:setLinearVelocity( -200*velocity, 0 )
+        parallelogram:setLinearVelocity( -200, 0 )
 
         sceneGroup:insert(parallelogram)
         obstacleTable[#obstacleTable+1] = parallelogram
@@ -276,6 +283,7 @@ local function onCollision( event )
         print('perde vida')
     end
 
+    -- Quando pega vida
     if ( ( obj1.myName == "square" and obj2.myName == "life" ) or ( obj1.myName == "life" and obj2.myName == "square" ) ) then
 
         if( life < 4 ) then
@@ -285,6 +293,7 @@ local function onCollision( event )
 
     end
 
+    -- Quando colide com um obstáculo
     if ( ( obj1.myName == "square" and obj2.myName == "obstacle" ) or ( obj1.myName == "obstacle" and obj2.myName == "square" ) ) then
 
         if ( died == false ) then
@@ -341,7 +350,7 @@ end
 composer.recycleOnSceneChange = true;
 function scene:create( event )
     sceneGroup = self.view
-            ----------------------------
+        ----------------------------
         -------- BACKGROUND --------
         bgAmanhecer = display.newImageRect("images/background/amanhecer.png", 600, 380)
         bgAmanhecer.x = X
@@ -373,7 +382,10 @@ function scene:create( event )
         bgNoite.y = Y
         bgNoite.alpha = 0
 
-        ----------------------
+        --------------------------
+        -------- OBSTACLE --------
+
+        -----------------------
         -------- LIFES --------
         fullLife = display.newImageRect("images/square/full-life.png", 25, 25)
         fullLife.x = W-490
@@ -466,7 +478,7 @@ function scene:show( event )
 
     if ( phase == "will" ) then
         bgChange = timer.performWithDelay( dias, changeBackground, -1 )
-        gameLoopTimer = timer.performWithDelay( 2000, gameLoop, -1 )
+        gameLoopTimer = timer.performWithDelay( 5000, gameLoop, -1 )
         
         daysCount = timer.performWithDelay( contDias, days, -1 )
         button:addEventListener( "tap", pushSquare )
