@@ -162,6 +162,22 @@ local function gameLoop()
 
 end
 
+local function gotoPressToStart()
+    -- audio.play(  )
+    if( #obstacleTable ~= 0 ) then
+        for i = #obstacleTable, 1, -1  do
+            
+            local thisObstacle = obstacleTable[i]
+            display.remove( thisObstacle )
+            table.remove( obstacleTable, i )
+            print("removeu obstaculo")
+
+        end
+    end
+    composer.gotoScene( "game", { time=500, effect="crossFade" } )
+  
+  end
+
 --                      COMPOSER                        --
 ----------------------------------------------------------
 ----------------------------------------------------------
@@ -219,10 +235,10 @@ function scene:create( event )
         sky.name = "Sky"
         physics.addBody( sky, "static" )
 
-        btnStart = display.newRect( 240, 260, 110, 30 )
-        btnStart:setFillColor( 0.5, 1, 1 )
-        btnStart.alpha = 0.01
-        physics.addBody( btnStart, "static" )
+        -- btnStart = display.newRect( 240, 260, 110, 30 )
+        -- btnStart:setFillColor( 0.5, 1, 1 )
+        -- btnStart.alpha = 0.01
+        -- physics.addBody( btnStart, "static" )
         -----------------------
         -------- TITLE --------
         title = display.newImageRect("images/run.png", 100, 40)
@@ -282,6 +298,7 @@ function scene:show( event )
         
         bgChange = timer.performWithDelay( 350, changeBackground, -1 )
         gameLoopTimer = timer.performWithDelay( 2000, gameLoop, -1 )
+        start:addEventListener( "touch", gotoPressToStart )
 
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
