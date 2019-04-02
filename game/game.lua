@@ -69,6 +69,8 @@ local obstacleTable = {}
 local pausarObstaculo = false
 local hora = 0
 local died = false
+local dias = 2500
+local contDias = dias*6
 ----------------------------------------------------------
 local function changeBackground()
     hora = hora + 1
@@ -231,7 +233,7 @@ local function gameLoop()
         timer.cancel(gameLoopTimer)
         delayLevelTimer = timer.performWithDelay(1000, startGameLoop, 1)
         pausarObstaculo = true
-        gameLoopTimer = timer.performWithDelay(2500/velocity, gameLoop, 0)
+        gameLoopTimer = timer.performWithDelay(2500, gameLoop, 0)
     end
 
     -- Remove obstacles
@@ -463,10 +465,10 @@ function scene:show( event )
     local phase = event.phase
 
     if ( phase == "will" ) then
-        bgChange = timer.performWithDelay( 1000, changeBackground, -1 )
-        gameLoopTimer = timer.performWithDelay( 2000/velocity, gameLoop, 0 )
+        bgChange = timer.performWithDelay( dias, changeBackground, -1 )
+        gameLoopTimer = timer.performWithDelay( 2000, gameLoop, -1 )
         
-        daysCount = timer.performWithDelay( 6000, days, -1 )
+        daysCount = timer.performWithDelay( contDias, days, -1 )
         button:addEventListener( "tap", pushSquare )
 
         Runtime:addEventListener( "collision", onCollision )
