@@ -37,16 +37,6 @@ local halfLife -- half life
 local life1 -- 1/4 life
 local square
 
-local life = 4
-
-local level = 1
-local levelAtual = 1
-local velocity = level*0.5
-local contador = 0
-
---local placar
-local pontuacao = 0
-local text
 local button
 
 local floor
@@ -67,13 +57,25 @@ display.setStatusBar( display.HiddenStatusBar )
 local function pushSquare()
     square:applyLinearImpulse( 0, -0.05, square.x, square.y )
 end
---button:addEventListener( "tap", pushSquare )
+
 ----------------------------------------------------------
+local life = 4
+local lifeLoop
+
+local level = 1
+local velocity = level*0.25
+
+--local placar
+local pontuacao = 0
+local text
+
 local obstacleTable = {}
 local pausarObstaculo = false
-local hora = 0
+
 local died = false
-local dias = 2500
+
+local hora = 0
+local dias = 5000
 local contDias = dias*6
 ----------------------------------------------------------
 local function changeBackground()
@@ -131,8 +133,9 @@ end
 
 local function createObstacle()
     local whereFrom = math.random( 3 )
-    -- whereFrom = 1
+    --whereFrom = 1
 
+    print( os.time() .. " tempo" )
     if( whereFrom == 1 ) then 
 
         retangle = display.newImageRect("images/obstaculo-5.png", 45, 95 )
@@ -142,7 +145,7 @@ local function createObstacle()
 
         retangle.x = W+100
         retangle.y = H-70
-        retangle:setLinearVelocity( -150, 0 )
+        retangle:setLinearVelocity( -200*velocity, 0 )
 
         sceneGroup:insert(retangle)
         obstacleTable[#obstacleTable+1] = retangle
@@ -156,7 +159,7 @@ local function createObstacle()
 
         trapeze.x = W+100
         trapeze.y = H-150
-        trapeze:setLinearVelocity( -150, 0 )
+        trapeze:setLinearVelocity( -200*velocity, 0 )
 
         sceneGroup:insert(trapeze)
         obstacleTable[#obstacleTable+1] = trapeze
@@ -170,7 +173,7 @@ local function createObstacle()
 
         parallelogram.x = W+100
         parallelogram.y = H-250
-        parallelogram:setLinearVelocity( -200, 0 )
+        parallelogram:setLinearVelocity( -200*velocity, 0 )
 
         sceneGroup:insert(parallelogram)
         obstacleTable[#obstacleTable+1] = parallelogram
@@ -226,23 +229,26 @@ end
 local function gameLoop()
 
     if(not pausarObstaculo)then
-
         createObstacle()
     end
     
-    levelAtual = math.floor( contador/5+1 )
+    print('level '.. ttlDays)
+    print('v '.. velocity)
+    if( level ~= ttlDays ) then 
+        
+        level = ttlDays
 
-    if( level ~= levelAtual ) then 
-        
-        level = levelAtual
-        velocity = level*0.5
-        
+        if(velocity <= 3) then
+            velocity = level*0.25
+        end
+
         timer.cancel(gameLoopTimer)
-        delayLevelTimer = timer.performWithDelay(1000, startGameLoop, 1)
+        delayLevelTimer = timer.performWithDelay(1000/velocity, startGameLoop, 1)
         pausarObstaculo = true
-        gameLoopTimer = timer.performWithDelay(2500, gameLoop, 0)
-    end
+        gameLoopTimer   = timer.performWithDelay(2500/velocity, gameLoop, 0)
 
+    end
+        
     -- Remove obstacles
     if( #obstacleTable ~= 0 ) then
         for i = #obstacleTable, 1, -1  do
@@ -252,7 +258,7 @@ local function gameLoop()
             then
                 display.remove( thisObstacle )
                 table.remove( obstacleTable, i )
-                print("removeu obstaculo")
+                print("removeu obstaculo - teste")
             end
         end
     end
@@ -302,11 +308,13 @@ local function onCollision( event )
             life = life - 1
             lifes()
 
+            display.remove(obj1)
+
             if( #obstacleTable ~= 0 ) then
                 for i = #obstacleTable, 1, -1  do
                     local thisObstacle = obstacleTable[i]
         
-                    if ( thisObstacle == obj2 )
+                    if ( thisObstacle == obj1 )
                     then
                         display.remove( thisObstacle )
                         table.remove( obstacleTable, i )
@@ -324,6 +332,7 @@ local function onCollision( event )
                 timer.cancel(daysCount)
 
                 button:removeEventListener( "tap", pushSquare )
+
                 local txt = display.newText( "GAME OVER", X, 150, native.systemFont, 30 )
             else
                 square.alpha = 1
@@ -478,7 +487,8 @@ function scene:show( event )
 
     if ( phase == "will" ) then
         bgChange = timer.performWithDelay( dias, changeBackground, -1 )
-        gameLoopTimer = timer.performWithDelay( 5000, gameLoop, -1 )
+        gameLoopTimer = timer.performWithDelay( 1250/velocity, gameLoop, -1 )
+        lifeLoop = timer.performWithDelay( 20000, extraLife, -1 )
         
         daysCount = timer.performWithDelay( contDias, days, -1 )
         button:addEventListener( "tap", pushSquare )
@@ -498,7 +508,11 @@ function scene:hide( event )
   
     if ( phase == "will" ) then
       -- Code here runs when the scene is on screen (but is about to go off screen)
-     
+        timer.cancel(gameLoopTimer)
+        timer.cancel(bgChange)
+        timer.cancel(daysCount)
+
+        button:removeEventListener( "tap", pushSquare )
   
     elseif ( phase == "did" ) then
       -- Code here runs immediately after the scene goes entirely off screen
