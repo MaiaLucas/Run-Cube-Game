@@ -16,12 +16,12 @@ Y = display.contentCenterY
 ----------------------------------------------------------
 ----------------------------------------------------------
 ----------------------------------------------------------
-local bgAmanhecer
-local bgManha
-local bgMeioDia
-local bgEntardecer
-local bgAnoitecer
-local bgNoite
+local bg1
+local bg2
+local bg3
+local bg4
+local bg5
+local bg6
 local bgChange
 
 local retangle
@@ -49,48 +49,48 @@ local function changeBackground()
 
     if( hora == 1 ) then
 
-        bgAmanhecer.alpha  = 1
-        bgManha.alpha      = 0
-        bgMeioDia.alpha    = 0
-        bgEntardecer.alpha = 0
-        bgAnoitecer.alpha  = 0
-        bgNoite.alpha      = 0    
+        bg1.alpha = 1
+        bg2.alpha = 0
+        bg3.alpha = 0
+        bg4.alpha = 0
+        bg5.alpha = 0
+        bg6.alpha = 0    
 
     elseif( hora == 2 ) then -- manhã
-        bgAmanhecer.alpha  = 0 
-        bgManha.alpha      = 1
-        bgMeioDia.alpha    = 0
-        bgEntardecer.alpha = 0
-        bgAnoitecer.alpha  = 0
-        bgNoite.alpha      = 0 
+        bg1.alpha = 0 
+        bg2.alpha = 1
+        bg3.alpha = 0
+        bg4.alpha = 0
+        bg5.alpha = 0
+        bg6.alpha = 0 
     elseif( hora == 3 ) then -- meio dia
-        bgAmanhecer.alpha  = 0
-        bgManha.alpha      = 0
-        bgMeioDia.alpha    = 1
-        bgEntardecer.alpha = 0
-        bgAnoitecer.alpha  = 0
-        bgNoite.alpha = 0 
+        bg1.alpha = 0
+        bg2.alpha = 0
+        bg3.alpha = 1
+        bg4.alpha = 0
+        bg5.alpha = 0
+        bg6.alpha = 0 
     elseif( hora == 4 ) then -- entardecer
-        bgAmanhecer.alpha  = 0
-        bgManha.alpha      = 0
-        bgMeioDia.alpha    = 0
-        bgEntardecer.alpha = 1
-        bgAnoitecer.alpha  = 0
-        bgNoite.alpha      = 0 
+        bg1.alpha = 0
+        bg2.alpha = 0
+        bg3.alpha = 0
+        bg4.alpha = 1
+        bg5.alpha = 0
+        bg6.alpha = 0 
     elseif( hora == 5 ) then -- anoitecer
-        bgAmanhecer.alpha  = 0
-        bgManha.alpha      = 0
-        bgMeioDia.alpha    = 0
-        bgEntardecer.alpha = 0
-        bgAnoitecer.alpha  = 1
-        bgNoite.alpha      = 0 
+        bg1.alpha = 0
+        bg2.alpha = 0
+        bg3.alpha = 0
+        bg4.alpha = 0
+        bg5.alpha = 1
+        bg6.alpha = 0 
     elseif( hora == 6 ) then -- noite
-        bgAmanhecer.alpha  = 0
-        bgManha.alpha      = 0
-        bgMeioDia.alpha    = 0
-        bgEntardecer.alpha = 0
-        bgAnoitecer.alpha  = 0
-        bgNoite.alpha      = 1
+        bg1.alpha = 0
+        bg2.alpha = 0
+        bg3.alpha = 0
+        bg4.alpha = 0
+        bg5.alpha = 0
+        bg6.alpha = 1
 
         hora = 0
     end
@@ -100,6 +100,7 @@ end
 local function createObstacle()
     local whereFrom = math.random( 3 )
 
+    print('menu')
     if( whereFrom == 1 ) then 
         retangle = display.newImageRect("images/obstaculo-5.png", 45, 95 )
         physics.addBody( retangle, "dynamic", { isSensor = true } )
@@ -138,8 +139,11 @@ local function createObstacle()
 
         sceneGroup:insert(parallelogram)
         obstacleTable[#obstacleTable+1] = parallelogram
-
     end
+    title:toFront()
+    title1:toFront()
+    start:toFront()
+    opt:toFront()
 end
 
 local function gameLoop()
@@ -178,6 +182,21 @@ local function gotoPressToStart()
   
   end
 
+local function gotoPressToOption()
+-- audio.play(  )
+if( #obstacleTable ~= 0 ) then
+    for i = #obstacleTable, 1, -1  do
+        
+        local thisObstacle = obstacleTable[i]
+        display.remove( thisObstacle )
+        table.remove( obstacleTable, i )
+        print("removeu obstaculo")
+
+    end
+end
+composer.gotoScene( "option", { time=500, effect="crossFade" } )
+
+end
 --                      COMPOSER                        --
 ----------------------------------------------------------
 ----------------------------------------------------------
@@ -191,35 +210,35 @@ function scene:create( event )
 
         ----------------------------
         -------- BACKGROUND --------
-        bgAmanhecer = display.newImageRect("images/background/amanhecer.png", 600, 380)
-        bgAmanhecer.x = X
-        bgAmanhecer.y = Y
-        bgAmanhecer.alpha = 1
+        bg1 = display.newImageRect("images/background/amanhecer.png", 600, 380)
+        bg1.x = X
+        bg1.y = Y
+        bg1.alpha = 1
 
-        bgManha = display.newImageRect("images/background/manha.png", 600, 380)
-        bgManha.x = X
-        bgManha.y = Y
-        bgManha.alpha = 0
+        bg2 = display.newImageRect("images/background/manha.png", 600, 380)
+        bg2.x = X
+        bg2.y = Y
+        bg2.alpha = 0
 
-        bgMeioDia = display.newImageRect("images/background/meio-dia.png", 600, 380)
-        bgMeioDia.x = X
-        bgMeioDia.y = Y
-        bgMeioDia.alpha = 0
+        bg3 = display.newImageRect("images/background/meio-dia.png", 600, 380)
+        bg3.x = X
+        bg3.y = Y
+        bg3.alpha = 0
 
-        bgEntardecer = display.newImageRect("images/background/entardecer.png", 600, 380)
-        bgEntardecer.x = X
-        bgEntardecer.y = Y
-        bgEntardecer.alpha = 0
+        bg4 = display.newImageRect("images/background/entardecer.png", 600, 380)
+        bg4.x = X
+        bg4.y = Y
+        bg4.alpha = 0
 
-        bgAnoitecer = display.newImageRect("images/background/anoitecer.png", 600, 380)
-        bgAnoitecer.x = X
-        bgAnoitecer.y = Y
-        bgAnoitecer.alpha = 0
+        bg5 = display.newImageRect("images/background/anoitecer.png", 600, 380)
+        bg5.x = X
+        bg5.y = Y
+        bg5.alpha = 0
 
-        bgNoite = display.newImageRect("images/background/noite.png", 600, 380)
-        bgNoite.x = X
-        bgNoite.y = Y
-        bgNoite.alpha = 0
+        bg6 = display.newImageRect("images/background/noite.png", 600, 380)
+        bg6.x = X
+        bg6.y = Y
+        bg6.alpha = 0
 
         -------------------------------
         -------- SKY AND FLOOR --------
@@ -235,10 +254,6 @@ function scene:create( event )
         sky.name = "Sky"
         physics.addBody( sky, "static" )
 
-        -- btnStart = display.newRect( 240, 260, 110, 30 )
-        -- btnStart:setFillColor( 0.5, 1, 1 )
-        -- btnStart.alpha = 0.01
-        -- physics.addBody( btnStart, "static" )
         -----------------------
         -------- TITLE --------
         title = display.newImageRect("images/run.png", 100, 40)
@@ -246,7 +261,7 @@ function scene:create( event )
         title.y = Y-80
         title.alpha = 1
         physics.addBody( title, "static", { isSensor = false } )
-        title:toFront()
+        --title:toFront()
 
         title1 = display.newImageRect("images/square-title.png", 250, 70)
         title1.x = X
@@ -273,12 +288,12 @@ function scene:create( event )
 
         ------------------------
         -------- INSERT --------
-        sceneGroup:insert(bgAmanhecer)
-        sceneGroup:insert(bgManha)
-        sceneGroup:insert(bgMeioDia)
-        sceneGroup:insert(bgEntardecer)
-        sceneGroup:insert(bgAnoitecer)
-        sceneGroup:insert(bgNoite)
+        sceneGroup:insert(bg1)
+        sceneGroup:insert(bg2)
+        sceneGroup:insert(bg3)
+        sceneGroup:insert(bg4)
+        sceneGroup:insert(bg5)
+        sceneGroup:insert(bg6)
 
         sceneGroup:insert(title)
         sceneGroup:insert(title1)
@@ -299,6 +314,7 @@ function scene:show( event )
         bgChange = timer.performWithDelay( 350, changeBackground, -1 )
         gameLoopTimer = timer.performWithDelay( 2000, gameLoop, -1 )
         start:addEventListener( "touch", gotoPressToStart )
+        opt:addEventListener( "touch", gotoPressToOption )
 
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
@@ -313,7 +329,8 @@ function scene:hide( event )
   
     if ( phase == "will" ) then
       -- Code here runs when the scene is on screen (but is about to go off screen)
-     
+        timer.cancel(gameLoopTimer)
+        timer.cancel(bgChange)
   
     elseif ( phase == "did" ) then
       -- Code here runs immediately after the scene goes entirely off screen
