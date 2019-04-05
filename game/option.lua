@@ -29,8 +29,14 @@ local trapeze
 local parallelogram
 
 local title
-local title1
+
+local optGroup
 local start
+local exit
+
+local sound
+local on
+local off
 
 local opt
 
@@ -140,6 +146,8 @@ local function createObstacle()
         obstacleTable[#obstacleTable+1] = parallelogram
 
     end
+    exit:toFront()
+    optGroup:toFront()
 end
 
 local function gameLoop()
@@ -162,7 +170,7 @@ local function gameLoop()
 
 end
 
-local function gotoPressToStart()
+local function gotoPressToExit()
     -- audio.play(  )
     if( #obstacleTable ~= 0 ) then
         for i = #obstacleTable, 1, -1  do
@@ -174,6 +182,7 @@ local function gotoPressToStart()
 
         end
     end
+    
     composer.gotoScene( "menu", { time=500, effect="crossFade" } )
   
   end
@@ -237,20 +246,19 @@ function scene:create( event )
 
         -----------------------
         -------- TITLE --------
-        title = display.newImageRect("images/run.png", 100, 40)
-        title.x = X
-        title.y = Y-80
-        title.alpha = 1
-        physics.addBody( title, "static", { isSensor = false } )
-        title:toFront()
+        -- title = display.newImageRect("images/opt-group.png", 100, 40)
+        -- title.x = X
+        -- title.y = Y-80
+        -- title.alpha = 1
+        -- physics.addBody( title, "static", { isSensor = false } )
+        -- title:toFront()
 
-        title1 = display.newImageRect("images/square-title.png", 250, 70)
-        title1.x = X
-        title1.y = Y-20
-        title1.alpha = 1
-        physics.addBody( title1, "static", { isSensor = false } )
-        title1:toFront()
-
+        optGroup = display.newImageRect("images/opt-group.png", 350, 250)
+        optGroup.x = X
+        optGroup.y = Y
+        optGroup.alpha = 1
+        physics.addBody( optGroup, "static", { isSensor = false } )
+        
         ----------------------------------
         -------- START AND OPTION --------
         -- start = display.newImageRect("images/start.png", 100, 20)
@@ -260,12 +268,18 @@ function scene:create( event )
         -- physics.addBody( start, "static", { isSensor = false } )
         -- start:toFront()
 
-        opt = display.newImageRect("images/option.png", 30, 30)
-        opt.x = X+260
-        opt.y = Y-135
-        opt.alpha = 1
-        physics.addBody( opt, "static", { isSensor = false } )
-        opt:toFront()
+        sound = display.newImageRect("images/sound.png", 50, 20)
+        sound.x = X-100
+        sound.y = Y-50
+        sound.alpha = 1
+        physics.addBody( sound, "static", { isSensor = false } )
+        sound:toFront()
+
+        exit = display.newImageRect("images/exit-x.png", 20, 20)
+        exit.x = X+150
+        exit.y = Y-100
+        exit.alpha = 1
+        physics.addBody( exit, "static", { isSensor = false } )
 
         ------------------------
         -------- INSERT --------
@@ -276,10 +290,9 @@ function scene:create( event )
         sceneGroup:insert(bg5)
         sceneGroup:insert(bg6)
 
-        sceneGroup:insert(title)
-        sceneGroup:insert(title1)
-        --sceneGroup:insert(start)
-        sceneGroup:insert(opt)
+        --sceneGroup:insert(title)
+        sceneGroup:insert(optGroup)
+        sceneGroup:insert(exit)
 
         sceneGroup:insert(sky)
         sceneGroup:insert(floor)
@@ -292,9 +305,9 @@ function scene:show( event )
 
     if ( phase == "will" ) then
         
-        bgChange = timer.performWithDelay( 350, changeBackground, -1 )
-        gameLoopTimer = timer.performWithDelay( 2000, gameLoop, -1 )
-        --start:addEventListener( "touch", gotoPressToStart )
+        bgChange = timer.performWithDelay( 350, changeBackground, 0 )
+        gameLoopTimer = timer.performWithDelay( 2000, gameLoop, 0 )
+        exit:addEventListener( "tap", gotoPressToExit )
 
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
