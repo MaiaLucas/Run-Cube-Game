@@ -16,9 +16,9 @@ X = display.contentCenterX
 Y = display.contentCenterY
 ----------------------------------------------------------
 
-----------------------------------------------------------
-----------------------------------------------------------
-----------------------------------------------------------
+----------------------------------------------
+-------- VARIAVEIS SETADAS NO :create --------
+----------------------------------------------
 local bgAmanhecer
 local bgManha
 local bgMeioDia
@@ -51,21 +51,12 @@ txDays:setFillColor( 0 )
 display.setStatusBar( display.HiddenStatusBar )
 
 ----------------------------------------------------------
-----------------------------------------------------------
-----------------------------------------------------------
-
-local function pushSquare()
-    square:applyLinearImpulse( 0, -0.05, square.x, square.y )
-end
-
-----------------------------------------------------------
 local life = 4
 local lifeLoop
 
 local level = 1
 local velocity = level*0.25
 
---local placar
 local pontuacao = 0
 local text
 
@@ -78,53 +69,87 @@ local hora = 0
 local dias = 5000
 local contDias = dias*6
 ----------------------------------------------------------
+
+---------------------------
+-------- FUNCTIONS --------
+---------------------------
+
+local function pushSquare()
+    square:applyLinearImpulse( 0, -0.05, square.x, square.y )
+    
+end
+
+local function changeSquare()
+    if( life == 4 ) then
+        fullLife.alpha = 1
+        life3.alpha    = 0
+        halfLife.alpha = 0
+        life1.alpha    = 0
+    elseif( life == 3 ) then 
+        fullLife.alpha = 0
+        life3.alpha    = 1
+        halfLife.alpha = 0
+        life1.alpha    = 0
+    elseif( life == 2 ) then
+        fullLife.alpha = 0
+        life3.alpha    = 0
+        halfLife.alpha = 1
+        life1.alpha    = 0
+    elseif( life == 1 ) then
+        fullLife.alpha = 0
+        life3.alpha    = 0
+        halfLife.alpha = 0
+        life1.alpha    = 1
+    end
+end
+
 local function changeBackground()
     hora = hora + 1
 
     if( hora == 1 ) then
 
-        bgAmanhecer.alpha = 1
-        bgManha.alpha = 0
-        bgMeioDia.alpha = 0
+        bgAmanhecer.alpha  = 1
+        bgManha.alpha      = 0
+        bgMeioDia.alpha    = 0
         bgEntardecer.alpha = 0
-        bgAnoitecer.alpha = 0
-        bgNoite.alpha = 0    
+        bgAnoitecer.alpha  = 0
+        bgNoite.alpha      = 0    
 
     elseif( hora == 2 ) then -- manhã
-        bgAmanhecer.alpha = 0 
-        bgManha.alpha = 1
-        bgMeioDia.alpha = 0
+        bgAmanhecer.alpha  = 0 
+        bgManha.alpha      = 1
+        bgMeioDia.alpha    = 0
         bgEntardecer.alpha = 0
-        bgAnoitecer.alpha = 0
-        bgNoite.alpha = 0 
+        bgAnoitecer.alpha  = 0
+        bgNoite.alpha      = 0 
     elseif( hora == 3 ) then -- meio dia
-        bgAmanhecer.alpha = 0
-        bgManha.alpha = 0
-        bgMeioDia.alpha = 1
+        bgAmanhecer.alpha  = 0
+        bgManha.alpha      = 0
+        bgMeioDia.alpha    = 1
         bgEntardecer.alpha = 0
-        bgAnoitecer.alpha = 0
-        bgNoite.alpha = 0 
+        bgAnoitecer.alpha  = 0
+        bgNoite.alpha      = 0 
     elseif( hora == 4 ) then -- entardecer
-        bgAmanhecer.alpha = 0
-        bgManha.alpha = 0
-        bgMeioDia.alpha = 0
+        bgAmanhecer.alpha  = 0
+        bgManha.alpha      = 0
+        bgMeioDia.alpha    = 0
         bgEntardecer.alpha = 1
-        bgAnoitecer.alpha = 0
-        bgNoite.alpha = 0 
+        bgAnoitecer.alpha  = 0
+        bgNoite.alpha      = 0 
     elseif( hora == 5 ) then -- anoitecer
-        bgAmanhecer.alpha = 0
-        bgManha.alpha = 0
-        bgMeioDia.alpha = 0
+        bgAmanhecer.alpha  = 0
+        bgManha.alpha      = 0
+        bgMeioDia.alpha    = 0
         bgEntardecer.alpha = 0
-        bgAnoitecer.alpha = 1
-        bgNoite.alpha = 0 
+        bgAnoitecer.alpha  = 1
+        bgNoite.alpha      = 0 
     elseif( hora == 6 ) then -- noite
-        bgAmanhecer.alpha = 0
-        bgManha.alpha = 0
-        bgMeioDia.alpha = 0
+        bgAmanhecer.alpha  = 0
+        bgManha.alpha      = 0
+        bgMeioDia.alpha    = 0
         bgEntardecer.alpha = 0
-        bgAnoitecer.alpha = 0
-        bgNoite.alpha = 1
+        bgAnoitecer.alpha  = 0
+        bgNoite.alpha      = 1
 
         hora = 0
     end
@@ -177,15 +202,15 @@ local function createObstacle()
 
         sceneGroup:insert(parallelogram)
         obstacleTable[#obstacleTable+1] = parallelogram
-
     end
+    square:toFront()
 end
 
 local function extraLife()
     local extra = display.newImageRect("images/square/1-life.png", 40, 40 )
     physics.addBody( extra, "dynamic", { bounce = 0, isSensor = true } )
     extra.gravityScale = 0
-    extra.myName = "life"
+    extra.myName       = "life"
     extra.x = W+100
     extra.y = H-math.random( 50, 200 )
     extra:setLinearVelocity( -150, 0 )
@@ -296,6 +321,19 @@ local function onCollision( event )
             life = life + 1
             lifes()
         end
+        display.remove(obj1)
+        if( #obstacleTable ~= 0 ) then
+            for i = #obstacleTable, 1, -1  do
+                local thisObstacle = obstacleTable[i]
+    
+                if ( thisObstacle == obj1 )
+                then
+                    display.remove( thisObstacle )
+                    table.remove( obstacleTable, i )
+                    print("removeu obstaculo 2")
+                end
+            end
+        end
 
     end
 
@@ -307,8 +345,6 @@ local function onCollision( event )
 
             life = life - 1
             lifes()
-
-            display.remove(obj1)
 
             if( #obstacleTable ~= 0 ) then
                 for i = #obstacleTable, 1, -1  do
@@ -400,7 +436,7 @@ function scene:create( event )
         fullLife.x = W-490
         fullLife.y = H-300
         fullLife.alpha = 1
-        fullLife.myName = "life"
+        fullLife.myName = "square"
         physics.addBody( fullLife, "static", { bounce = 0, isSensor = false } )
 
         life3 = display.newImageRect("images/square/3-life.png", 25, 25)
@@ -409,21 +445,21 @@ function scene:create( event )
         life3.isBullet = true
         life3.alpha = 0
         life3.isBullet = true
-        life3.myName = "life"
+        life3.myName = "square"
         physics.addBody( life3, "static", { bounce = 0, isSensor = false } )
 
         halfLife = display.newImageRect("images/square/half-life.png", 25, 25)
         halfLife.x = W-490
         halfLife.y = H-300
         halfLife.alpha = 0
-        halfLife.myName = "life"
+        halfLife.myName = "square"
         physics.addBody( halfLife, "static", { bounce = 0, isSensor = false } )
 
         life1 = display.newImageRect("images/square/1-life.png", 25, 25)
         life1.x = W-490
         life1.y = H-300
         life1.alpha = 0
-        life1.myName = "life"
+        life1.myName = "square"
         physics.addBody( life1, "static", { bounce = 0, isSensor = false } )
 
         ------------------------
