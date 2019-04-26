@@ -140,6 +140,7 @@ local function createObstacle()
         sceneGroup:insert(parallelogram)
         obstacleTable[#obstacleTable+1] = parallelogram
     end
+    
     title:toFront()
     title1:toFront()
     start:toFront()
