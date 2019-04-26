@@ -332,7 +332,7 @@ function scene:show( event )
 
     if ( phase == "will" ) then
         
-        bgChange = timer.performWithDelay( 350, changeBackground, -1 )
+        bgChange = timer.performWithDelay( 500, changeBackground, -1 )
         gameLoopTimer = timer.performWithDelay( 2000, gameLoop, -1 )
         start:addEventListener( "touch", gotoPressToStart )
         opt:addEventListener( "touch", gotoPressToOption )
