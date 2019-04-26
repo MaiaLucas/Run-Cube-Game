@@ -17,6 +17,12 @@ Y = display.contentCenterY
 ----------------------------------------------------------
 ----------------------------------------------------------
 local bg1
+local bg2
+local bg3
+local bg4
+local bg5
+local bg6
+local bgChange
 
 local lives
 local life
@@ -34,32 +40,59 @@ local text
 ----------------------------------------------------------
 ----------------------------------------------------------
 ----------------------------------------------------------
+local hora = 0
 
-local function createObstacle()
-    local whereFrom = math.random( 3 )
+local function changeBackground()
+    hora = hora + 1
 
-    if( whereFrom == 1 ) then 
-        
-        retangle:setLinearVelocity( -100, 0 )
+    if( hora == 1 ) then
 
-        sceneGroup:insert(retangle)
-        obstacleTable[#obstacleTable+1] = retangle
+        bg1.alpha = 1
+        bg2.alpha = 0
+        bg3.alpha = 0
+        bg4.alpha = 0
+        bg5.alpha = 0
+        bg6.alpha = 0    
 
-    elseif( whereFrom == 2 ) then
-        
-        trapeze:setLinearVelocity( -150, 0 )
+    elseif( hora == 2 ) then -- manhã
+        bg1.alpha = 0 
+        bg2.alpha = 1
+        bg3.alpha = 0
+        bg4.alpha = 0
+        bg5.alpha = 0
+        bg6.alpha = 0 
+    elseif( hora == 3 ) then -- meio dia
+        bg1.alpha = 0
+        bg2.alpha = 0
+        bg3.alpha = 1
+        bg4.alpha = 0
+        bg5.alpha = 0
+        bg6.alpha = 0 
+    elseif( hora == 4 ) then -- entardecer
+        bg1.alpha = 0
+        bg2.alpha = 0
+        bg3.alpha = 0
+        bg4.alpha = 1
+        bg5.alpha = 0
+        bg6.alpha = 0 
+    elseif( hora == 5 ) then -- anoitecer
+        bg1.alpha = 0
+        bg2.alpha = 0
+        bg3.alpha = 0
+        bg4.alpha = 0
+        bg5.alpha = 1
+        bg6.alpha = 0 
+    elseif( hora == 6 ) then -- noite
+        bg1.alpha = 0
+        bg2.alpha = 0
+        bg3.alpha = 0
+        bg4.alpha = 0
+        bg5.alpha = 0
+        bg6.alpha = 1
 
-        sceneGroup:insert(trapeze)
-        obstacleTable[#obstacleTable+1] = trapeze
-
-    elseif( whereFrom == 3 ) then
-        
-        parallelogram:setLinearVelocity( -200, 0 )
-
-        sceneGroup:insert(parallelogram)
-        obstacleTable[#obstacleTable+1] = parallelogram
-
+        hora = 0
     end
+
 end
 
 local function backToMenu()
@@ -85,6 +118,31 @@ function scene:create( event )
         bg1.x = X
         bg1.y = Y
         bg1.alpha = 1
+
+        bg2 = display.newImageRect("images/manha.png", 600, 380)
+        bg2.x = X
+        bg2.y = Y
+        bg2.alpha = 0
+
+        bg3 = display.newImageRect("images/meio-dia.png", 600, 380)
+        bg3.x = X
+        bg3.y = Y
+        bg3.alpha = 0
+
+        bg4 = display.newImageRect("images/entardecer.png", 600, 380)
+        bg4.x = X
+        bg4.y = Y
+        bg4.alpha = 0
+
+        bg5 = display.newImageRect("images/anoitecer.png", 600, 380)
+        bg5.x = X
+        bg5.y = Y
+        bg5.alpha = 0
+
+        bg6 = display.newImageRect("images/noite.png", 600, 380)
+        bg6.x = X
+        bg6.y = Y
+        bg6.alpha = 0
 
         --------------------------
         -------- TUTORIAL --------
@@ -140,13 +198,23 @@ function scene:create( event )
         ------------------------
         -------- INSERT --------
         sceneGroup:insert(bg1)
+        sceneGroup:insert(bg2)
+        sceneGroup:insert(bg3)
+        sceneGroup:insert(bg4)
+        sceneGroup:insert(bg5)
+        sceneGroup:insert(bg6)
+
+        sceneGroup:insert(tutorial)
         sceneGroup:insert(phraseLife)
         sceneGroup:insert(phraseObstacle)
+
         sceneGroup:insert(lives)
         sceneGroup:insert(obstacles)
+
         sceneGroup:insert(retangle)
         sceneGroup:insert(trapeze)
         sceneGroup:insert(parallelogram)
+
         sceneGroup:insert(back)
 
 end
@@ -156,6 +224,7 @@ function scene:show( event )
     local phase = event.phase
 
     if ( phase == "will" ) then
+        bgChange = timer.performWithDelay( 350, changeBackground, 0 )
         back:addEventListener( "tap", backToMenu )
 
     elseif ( phase == "did" ) then
