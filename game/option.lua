@@ -38,7 +38,6 @@ local sound
 local on
 local off
 
-local opt
 
 ----------------------------------------------------------
 ----------------------------------------------------------
@@ -105,7 +104,6 @@ end
 local function createObstacle()
     local whereFrom = math.random( 3 )
 
-    print('menu')
     if( whereFrom == 1 ) then 
         retangle = display.newImageRect("images/obstaculo-5.png", 45, 95 )
         physics.addBody( retangle, "dynamic", { isSensor = true } )
@@ -148,6 +146,9 @@ local function createObstacle()
     end
     exit:toFront()
     optGroup:toFront()
+    on:toFront()
+    off:toFront()
+    sound:toFront()
 end
 
 local function gameLoop()
@@ -163,14 +164,14 @@ local function gameLoop()
             then
                 display.remove( thisObstacle )
                 table.remove( obstacleTable, i )
-                print("removeu obstaculo")
+                
             end
         end
     end
 
 end
 
-local function gotoPressToExit()
+local function backToMenu()
     -- audio.play(  )
     if( #obstacleTable ~= 0 ) then
         for i = #obstacleTable, 1, -1  do
@@ -178,14 +179,27 @@ local function gotoPressToExit()
             local thisObstacle = obstacleTable[i]
             display.remove( thisObstacle )
             table.remove( obstacleTable, i )
-            print("removeu obstaculo")
 
         end
     end
     
     composer.gotoScene( "menu", { time=500, effect="crossFade" } )
   
-  end
+end
+
+local function soundOff()
+    if( on.alpha == 1 ) then
+        on.alpha  = 0
+        off.alpha = 1
+    end
+end
+
+local function soundOn()
+    if( off.alpha == 1 ) then
+        on.alpha  = 1
+        off.alpha = 0
+    end
+end
 
 --                      COMPOSER                        --
 ----------------------------------------------------------
@@ -244,40 +258,41 @@ function scene:create( event )
         sky.name = "Sky"
         physics.addBody( sky, "static" )
 
-        -----------------------
-        -------- TITLE --------
-        -- title = display.newImageRect("images/opt-group.png", 100, 40)
-        -- title.x = X
-        -- title.y = Y-80
-        -- title.alpha = 1
-        -- physics.addBody( title, "static", { isSensor = false } )
-        -- title:toFront()
-
-        optGroup = display.newImageRect("images/opt-group.png", 350, 250)
+        ------------------------------
+        -------- OPTION GROUP --------
+        optGroup = display.newImageRect("images/opt-group.png", 150, 50)
         optGroup.x = X
-        optGroup.y = Y
+        optGroup.y = Y-100
         optGroup.alpha = 1
         physics.addBody( optGroup, "static", { isSensor = false } )
         
-        ----------------------------------
-        -------- START AND OPTION --------
-        -- start = display.newImageRect("images/start.png", 100, 20)
-        -- start.x = X
-        -- start.y = Y+100
-        -- start.alpha = 1
-        -- physics.addBody( start, "static", { isSensor = false } )
-        -- start:toFront()
+        -------------------------
+        -------- OPTIONS --------
 
-        sound = display.newImageRect("images/sound.png", 50, 20)
-        sound.x = X-100
+        sound = display.newImageRect("images/sound.png", 100, 30)
+        sound.x = X-90
         sound.y = Y-50
         sound.alpha = 1
         physics.addBody( sound, "static", { isSensor = false } )
         sound:toFront()
 
-        exit = display.newImageRect("images/exit-x.png", 20, 20)
-        exit.x = X+150
-        exit.y = Y-100
+        on = display.newImageRect("images/on.png", 50, 20)
+        on.x = X
+        on.y = Y-50
+        on.alpha = 1
+        physics.addBody( on, "static", { isSensor = false } )
+        on:toFront()
+
+        off = display.newImageRect("images/off.png", 50, 20)
+        off.x = X
+        off.y = Y-50
+        off.alpha = 0
+        physics.addBody( off, "static", { isSensor = false } )
+        off:toFront()
+
+        exit = display.newImageRect("images/back.png", 90, 30)
+        exit.x = X
+        exit.y = Y+100
         exit.alpha = 1
         physics.addBody( exit, "static", { isSensor = false } )
 
@@ -290,9 +305,11 @@ function scene:create( event )
         sceneGroup:insert(bg5)
         sceneGroup:insert(bg6)
 
-        --sceneGroup:insert(title)
         sceneGroup:insert(optGroup)
         sceneGroup:insert(exit)
+        sceneGroup:insert(sound)
+        sceneGroup:insert(on)
+        sceneGroup:insert(off)
 
         sceneGroup:insert(sky)
         sceneGroup:insert(floor)
@@ -307,7 +324,9 @@ function scene:show( event )
         
         bgChange = timer.performWithDelay( 350, changeBackground, 0 )
         gameLoopTimer = timer.performWithDelay( 2000, gameLoop, 0 )
-        exit:addEventListener( "tap", gotoPressToExit )
+        exit:addEventListener( "tap", backToMenu )
+        on:addEventListener( "tap", soundOff )
+        off:addEventListener( "tap", soundOn )
 
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
