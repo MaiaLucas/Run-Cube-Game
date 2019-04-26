@@ -24,10 +24,6 @@ local bg5
 local bg6
 local bgChange
 
-local retangle
-local trapeze
-local parallelogram
-
 local exit
 local credits
 local developer
@@ -92,76 +88,6 @@ local function changeBackground()
         bg6.alpha = 1
 
         hora = 0
-    end
-
-end
-
-local function createObstacle()
-    local whereFrom = math.random( 3 )
-
-    if( whereFrom == 1 ) then 
-        retangle = display.newImageRect("images/obstaculo-5.png", 45, 95 )
-        physics.addBody( retangle, "dynamic", { isSensor = true } )
-        retangle.gravityScale = 0
-        retangle.myName = "obstacle"
-
-        retangle.x = W+100
-        retangle.y = H-70
-        retangle:setLinearVelocity( -100, 0 )
-
-        sceneGroup:insert(retangle)
-        obstacleTable[#obstacleTable+1] = retangle
-
-    elseif( whereFrom == 2 ) then
-        trapeze = display.newImageRect( "images/obstaculo-4.png", 60, 40 )
-        physics.addBody( trapeze, "dynamic", { isSensor = true } )
-        trapeze.gravityScale = 0
-        trapeze.myName = "obstacle"
-
-        trapeze.x = W+100
-        trapeze.y = H-150
-        trapeze:setLinearVelocity( -150, 0 )
-
-        sceneGroup:insert(trapeze)
-        obstacleTable[#obstacleTable+1] = trapeze
-
-    elseif( whereFrom == 3 ) then
-        parallelogram = display.newImageRect( "images/obstaculo-3.png", 50, 80 )
-        physics.addBody( parallelogram, "dynamic", { radius = 25, isSensor = true } )
-        parallelogram.gravityScale = 0
-        parallelogram.myName = "obstacle"
-
-        parallelogram.x = W+100
-        parallelogram.y = H-250
-        parallelogram:setLinearVelocity( -200, 0 )
-
-        sceneGroup:insert(parallelogram)
-        obstacleTable[#obstacleTable+1] = parallelogram
-
-    end
-    exit:toFront()
-    credits:toFront()
-    developer:toFront()
-    supervisor:toFront()
-    copyright:toFront()
-end
-
-local function gameLoop()
-
-    createObstacle()
-
-    -- Remove obstacles
-    if( #obstacleTable ~= 0 ) then
-        for i = #obstacleTable, 1, -1  do
-            local thisObstacle = obstacleTable[i]
-
-            if ( ( thisObstacle.x < -100 ) or ( thisObstacle.x > W + 100 ) )
-            then
-                display.remove( thisObstacle )
-                table.remove( obstacleTable, i )
-                
-            end
-        end
     end
 
 end
@@ -299,7 +225,6 @@ function scene:show( event )
     if ( phase == "will" ) then
         
         bgChange = timer.performWithDelay( 500, changeBackground, 0 )
-        gameLoopTimer = timer.performWithDelay( 2000, gameLoop, 0 )
         exit:addEventListener( "tap", backToMenu )
 
     elseif ( phase == "did" ) then
@@ -315,7 +240,6 @@ function scene:hide( event )
   
     if ( phase == "will" ) then
       -- Code here runs when the scene is on screen (but is about to go off screen)
-        timer.cancel(gameLoopTimer)
         timer.cancel(bgChange)
   
     elseif ( phase == "did" ) then
