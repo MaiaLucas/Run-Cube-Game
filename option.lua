@@ -33,6 +33,7 @@ local title
 local optGroup
 local start
 local exit
+local credits
 
 local sound
 local on
@@ -149,6 +150,7 @@ local function createObstacle()
     on:toFront()
     off:toFront()
     sound:toFront()
+    credits:toFront()
 end
 
 local function gameLoop()
@@ -199,6 +201,22 @@ local function soundOn()
         on.alpha  = 1
         off.alpha = 0
     end
+end
+
+local function goToCredits()
+    -- audio.play(  )
+    if( #obstacleTable ~= 0 ) then
+        for i = #obstacleTable, 1, -1  do
+            
+            local thisObstacle = obstacleTable[i]
+            display.remove( thisObstacle )
+            table.remove( obstacleTable, i )
+
+        end
+    end
+    
+    composer.gotoScene( "credits", { time=500, effect="crossFade" } )
+  
 end
 
 --                      COMPOSER                        --
@@ -296,6 +314,13 @@ function scene:create( event )
         exit.alpha = 1
         physics.addBody( exit, "static", { isSensor = false } )
 
+        credits = display.newImageRect("images/credits.png", 100, 30)
+        credits.x = X
+        credits.y = Y
+        credits.alpha = 1
+        physics.addBody( credits, "static", { isSensor = false } )
+        credits:toFront()
+
         ------------------------
         -------- INSERT --------
         sceneGroup:insert(bg1)
@@ -308,6 +333,7 @@ function scene:create( event )
         sceneGroup:insert(optGroup)
         sceneGroup:insert(exit)
         sceneGroup:insert(sound)
+        sceneGroup:insert(credits)
         sceneGroup:insert(on)
         sceneGroup:insert(off)
 
@@ -322,9 +348,10 @@ function scene:show( event )
 
     if ( phase == "will" ) then
         
-        bgChange = timer.performWithDelay( 350, changeBackground, 0 )
+        bgChange = timer.performWithDelay( 500, changeBackground, 0 )
         gameLoopTimer = timer.performWithDelay( 2000, gameLoop, 0 )
         exit:addEventListener( "tap", backToMenu )
+        credits:addEventListener( "tap", goToCredits )
         on:addEventListener( "tap", soundOff )
         off:addEventListener( "tap", soundOn )
 
