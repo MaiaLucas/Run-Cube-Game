@@ -31,6 +31,7 @@ local parallelogram
 local title
 local title1
 local start
+local tutorial
 
 local btnStart
 local opt
@@ -100,7 +101,6 @@ end
 local function createObstacle()
     local whereFrom = math.random( 3 )
 
-    print('menu')
     if( whereFrom == 1 ) then 
         retangle = display.newImageRect("images/obstaculo-5.png", 45, 95 )
         physics.addBody( retangle, "dynamic", { isSensor = true } )
@@ -143,6 +143,7 @@ local function createObstacle()
     title:toFront()
     title1:toFront()
     start:toFront()
+    tutorial:toFront()
     opt:toFront()
 end
 
@@ -159,7 +160,6 @@ local function gameLoop()
             then
                 display.remove( thisObstacle )
                 table.remove( obstacleTable, i )
-                print("removeu obstaculo")
             end
         end
     end
@@ -174,27 +174,25 @@ local function gotoPressToStart()
             local thisObstacle = obstacleTable[i]
             display.remove( thisObstacle )
             table.remove( obstacleTable, i )
-            print("removeu obstaculo")
 
         end
     end
     composer.gotoScene( "game", { time=500, effect="crossFade" } )
   
-  end
+end
 
 local function gotoPressToOption()
--- audio.play(  )
-if( #obstacleTable ~= 0 ) then
-    for i = #obstacleTable, 1, -1  do
-        
-        local thisObstacle = obstacleTable[i]
-        display.remove( thisObstacle )
-        table.remove( obstacleTable, i )
-        print("removeu obstaculo")
+    -- audio.play(  )
+    if( #obstacleTable ~= 0 ) then
+        for i = #obstacleTable, 1, -1  do
+            
+            local thisObstacle = obstacleTable[i]
+            display.remove( thisObstacle )
+            table.remove( obstacleTable, i )
 
+        end
     end
-end
-composer.gotoScene( "option", { time=500, effect="crossFade" } )
+    composer.gotoScene( "option", { time=500, effect="crossFade" } )
 
 end
 --                      COMPOSER                        --
@@ -210,32 +208,32 @@ function scene:create( event )
 
         ----------------------------
         -------- BACKGROUND --------
-        bg1 = display.newImageRect("images/background/amanhecer.png", 600, 380)
+        bg1 = display.newImageRect("images/background/amanhecer.png", 640, 320)
         bg1.x = X
         bg1.y = Y
         bg1.alpha = 1
 
-        bg2 = display.newImageRect("images/background/manha.png", 600, 380)
+        bg2 = display.newImageRect("images/background/manha.png", 640, 320)
         bg2.x = X
         bg2.y = Y
         bg2.alpha = 0
 
-        bg3 = display.newImageRect("images/background/meio-dia.png", 600, 380)
+        bg3 = display.newImageRect("images/background/meio-dia.png", 640, 320)
         bg3.x = X
         bg3.y = Y
         bg3.alpha = 0
 
-        bg4 = display.newImageRect("images/background/entardecer.png", 600, 380)
+        bg4 = display.newImageRect("images/background/entardecer.png", 640, 320)
         bg4.x = X
         bg4.y = Y
         bg4.alpha = 0
 
-        bg5 = display.newImageRect("images/background/anoitecer.png", 600, 380)
+        bg5 = display.newImageRect("images/background/anoitecer.png", 640, 320)
         bg5.x = X
         bg5.y = Y
         bg5.alpha = 0
 
-        bg6 = display.newImageRect("images/background/noite.png", 600, 380)
+        bg6 = display.newImageRect("images/background/noite.png", 640, 320)
         bg6.x = X
         bg6.y = Y
         bg6.alpha = 0
@@ -256,14 +254,14 @@ function scene:create( event )
 
         -----------------------
         -------- TITLE --------
-        title = display.newImageRect("images/run.png", 100, 40)
+        title = display.newImageRect("images/run.png", 150, 40)
         title.x = X
         title.y = Y-80
         title.alpha = 1
         physics.addBody( title, "static", { isSensor = false } )
         --title:toFront()
 
-        title1 = display.newImageRect("images/square-title.png", 250, 70)
+        title1 = display.newImageRect("images/square-title.png", 350, 70)
         title1.x = X
         title1.y = Y-20
         title1.alpha = 1
@@ -272,7 +270,14 @@ function scene:create( event )
 
         ----------------------------------
         -------- START AND OPTION --------
-        start = display.newImageRect("images/start.png", 100, 20)
+        tutorial = display.newImageRect("images/tutorial.png", 150, 30)
+        tutorial.x = X
+        tutorial.y = Y+60
+        tutorial.alpha = 1
+        physics.addBody( tutorial, "static", { isSensor = false } )
+        tutorial:toFront()
+
+        start = display.newImageRect("images/start.png", 150, 30)
         start.x = X
         start.y = Y+100
         start.alpha = 1
@@ -298,6 +303,7 @@ function scene:create( event )
         sceneGroup:insert(title)
         sceneGroup:insert(title1)
         sceneGroup:insert(start)
+        sceneGroup:insert(tutorial)
         sceneGroup:insert(opt)
 
         sceneGroup:insert(sky)
