@@ -224,7 +224,8 @@ function scene:show( event )
     local phase = event.phase
 
     if ( phase == "will" ) then
-        bgChange = timer.performWithDelay( 350, changeBackground, 0 )
+        
+        bgChange = timer.performWithDelay( 500, changeBackground, 0 )
         back:addEventListener( "tap", backToMenu )
 
     elseif ( phase == "did" ) then
