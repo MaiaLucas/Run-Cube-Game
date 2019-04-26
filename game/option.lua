@@ -214,32 +214,32 @@ function scene:create( event )
 
         ----------------------------
         -------- BACKGROUND --------
-        bg1 = display.newImageRect("images/background/amanhecer.png", 600, 380)
+        bg1 = display.newImageRect("images/bg1.png", 600, 380)
         bg1.x = X
         bg1.y = Y
         bg1.alpha = 1
 
-        bg2 = display.newImageRect("images/background/manha.png", 600, 380)
+        bg2 = display.newImageRect("images/manha.png", 600, 380)
         bg2.x = X
         bg2.y = Y
         bg2.alpha = 0
 
-        bg3 = display.newImageRect("images/background/meio-dia.png", 600, 380)
+        bg3 = display.newImageRect("images/meio-dia.png", 600, 380)
         bg3.x = X
         bg3.y = Y
         bg3.alpha = 0
 
-        bg4 = display.newImageRect("images/background/entardecer.png", 600, 380)
+        bg4 = display.newImageRect("images/entardecer.png", 600, 380)
         bg4.x = X
         bg4.y = Y
         bg4.alpha = 0
 
-        bg5 = display.newImageRect("images/background/anoitecer.png", 600, 380)
+        bg5 = display.newImageRect("images/anoitecer.png", 600, 380)
         bg5.x = X
         bg5.y = Y
         bg5.alpha = 0
 
-        bg6 = display.newImageRect("images/background/noite.png", 600, 380)
+        bg6 = display.newImageRect("images/noite.png", 600, 380)
         bg6.x = X
         bg6.y = Y
         bg6.alpha = 0
