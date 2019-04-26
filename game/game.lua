@@ -160,7 +160,6 @@ local function createObstacle()
     local whereFrom = math.random( 3 )
     --whereFrom = 1
 
-    print( os.time() .. " tempo" )
     if( whereFrom == 1 ) then 
 
         retangle = display.newImageRect("images/obstaculo-5.png", 45, 95 )
@@ -246,7 +245,6 @@ local function lifes()
 end
 
 local function startGameLoop()
-    print("startGameLoop")
     pausarObstaculo = false
    
 end
@@ -257,8 +255,6 @@ local function gameLoop()
         createObstacle()
     end
     
-    print('level '.. ttlDays)
-    print('v '.. velocity)
     if( level ~= ttlDays ) then 
         
         level = ttlDays
@@ -283,7 +279,6 @@ local function gameLoop()
             then
                 display.remove( thisObstacle )
                 table.remove( obstacleTable, i )
-                print("removeu obstaculo - teste")
             end
         end
     end
@@ -310,10 +305,6 @@ local function onCollision( event )
     local obj1 = event.object1
     local obj2 = event.object2
 
-    if( ( obj1.myName == "square" and obj2.myName == "Sky" ) or ( obj2.myName == "square" and obj1.myName == "Sky" ) ) then
-        print('perde vida')
-    end
-
     -- Quando pega vida
     if ( ( obj1.myName == "square" and obj2.myName == "life" ) or ( obj1.myName == "life" and obj2.myName == "square" ) ) then
 
@@ -330,7 +321,7 @@ local function onCollision( event )
                 then
                     display.remove( thisObstacle )
                     table.remove( obstacleTable, i )
-                    print("removeu obstaculo 2")
+                    
                 end
             end
         end
@@ -354,7 +345,7 @@ local function onCollision( event )
                     then
                         display.remove( thisObstacle )
                         table.remove( obstacleTable, i )
-                        print("removeu obstaculo 2")
+                        
                     end
                 end
             end
