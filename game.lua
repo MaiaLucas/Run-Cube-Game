@@ -31,13 +31,14 @@ local retangle
 local trapeze
 local parallelogram
 
-local fullLife -- full life
-local life3 -- 3/4 life
-local halfLife -- half life
-local life1 -- 1/4 life
+local fullLife 
+local life3 
+local halfLife 
+local life1 
 local square
 
 local button
+local back
 
 local floor
 local sky
@@ -46,7 +47,7 @@ local uiGroup = display.newGroup()
 local daysCount
 local ttlDays = 1
 local txDays = display.newText( "Day: " .. ttlDays, 0, 45, native.systemFont, 20 )
-txDays:setFillColor( 0 )
+txDays:setFillColor( 1 )
 
 display.setStatusBar( display.HiddenStatusBar )
 
@@ -203,6 +204,7 @@ local function createObstacle()
         obstacleTable[#obstacleTable+1] = parallelogram
     end
     square:toFront()
+    back:toFront()
 end
 
 local function extraLife()
@@ -389,6 +391,11 @@ local function days()
     txDays.text = "Day: " .. ttlDays
 end
 
+local function backToMenu()
+    -- audio.play(  )  
+    composer.gotoScene( "menu", { time=500, effect="crossFade" } )
+  
+end
 
 --                      COMPOSER                        --
 ----------------------------------------------------------
@@ -474,14 +481,19 @@ function scene:create( event )
         square.myName = "square"
         physics.addBody( square, "dynamic", { bounce = 0, isSensor = false } )
        
-        ------------------------
-        -------- BUTTON --------
+        ---------------------------------
+        -------- BUTTON AND BACK --------
         button = display.newImageRect("images/placar.png", 600, 480)
         button.x = X
         button.y = Y
         button.myName = "button"
         button.alpha = 0.01
         physics.addBody( button, "static", { radius = 30, bounce = 0, isSensor = true } )
+
+        back = display.newImageRect( "images/back.png", 50, 30 )
+        back.x = X+250
+        back.y = Y-135
+        physics.addBody( back, "static", { radius = 30, bounce = 0, isSensor = true } )
         
         -------------------------------
         -------- SKY AND FLOOR --------
@@ -513,6 +525,7 @@ function scene:create( event )
 
         sceneGroup:insert(square)
         sceneGroup:insert(button)
+        sceneGroup:insert(back)
 
         sceneGroup:insert(sky)
         sceneGroup:insert(floor)
@@ -524,12 +537,14 @@ function scene:show( event )
     local phase = event.phase
 
     if ( phase == "will" ) then
+
         bgChange = timer.performWithDelay( dias, changeBackground, -1 )
-        gameLoopTimer = timer.performWithDelay( 1250/velocity, gameLoop, -1 )
+        gameLoopTimer = timer.performWithDelay( 1000/velocity, gameLoop, -1 )
         lifeLoop = timer.performWithDelay( 20000, extraLife, -1 )
         
         daysCount = timer.performWithDelay( contDias, days, -1 )
         button:addEventListener( "tap", pushSquare )
+        back:addEventListener( "tap", backToMenu )
 
         Runtime:addEventListener( "collision", onCollision )
 
@@ -550,6 +565,8 @@ function scene:hide( event )
         timer.cancel(bgChange)
         timer.cancel(daysCount)
         timer.cancel(lifeLoop)
+
+        display.remove(txDays)
 
         button:removeEventListener( "tap", pushSquare )
   
