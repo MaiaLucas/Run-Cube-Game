@@ -23,6 +23,7 @@ local bg4
 local bg5
 local bg6
 local bgChange
+local house
 
 local exit
 local credits
@@ -121,35 +122,40 @@ function scene:create( event )
 
         ----------------------------
         -------- BACKGROUND --------
-        bg1 = display.newImageRect("images/amanhecer.png", 600, 380)
+        bg1 = display.newImageRect("images/amanhecer.png", 640, 320)
         bg1.x = X
         bg1.y = Y
         bg1.alpha = 1
 
-        bg2 = display.newImageRect("images/manha.png", 600, 380)
+        bg2 = display.newImageRect("images/manha.png", 640, 320)
         bg2.x = X
         bg2.y = Y
         bg2.alpha = 0
 
-        bg3 = display.newImageRect("images/meio-dia.png", 600, 380)
+        bg3 = display.newImageRect("images/meio-dia.png", 640, 320)
         bg3.x = X
         bg3.y = Y
         bg3.alpha = 0
 
-        bg4 = display.newImageRect("images/entardecer.png", 600, 380)
+        bg4 = display.newImageRect("images/entardecer.png", 640, 320)
         bg4.x = X
         bg4.y = Y
         bg4.alpha = 0
 
-        bg5 = display.newImageRect("images/anoitecer.png", 600, 380)
+        bg5 = display.newImageRect("images/anoitecer.png", 640, 320)
         bg5.x = X
         bg5.y = Y
         bg5.alpha = 0
 
-        bg6 = display.newImageRect("images/noite.png", 600, 380)
+        bg6 = display.newImageRect("images/noite.png", 640, 320)
         bg6.x = X
         bg6.y = Y
         bg6.alpha = 0
+        
+        house = display.newImageRect("images/house.png", 100, 100)
+        house.x = X-200
+        house.y = Y+70
+        house.alpha = 1
 
         -------------------------------
         -------- SKY AND FLOOR --------
@@ -206,6 +212,7 @@ function scene:create( event )
         sceneGroup:insert(bg4)
         sceneGroup:insert(bg5)
         sceneGroup:insert(bg6)
+        sceneGroup:insert(house)
 
         sceneGroup:insert(exit)
         sceneGroup:insert(credits)
@@ -224,7 +231,7 @@ function scene:show( event )
 
     if ( phase == "will" ) then
         
-        bgChange = timer.performWithDelay( 500, changeBackground, 0 )
+        bgChange = timer.performWithDelay( 1000, changeBackground, 0 )
         exit:addEventListener( "tap", backToMenu )
 
     elseif ( phase == "did" ) then

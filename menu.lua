@@ -23,6 +23,7 @@ local bg4
 local bg5
 local bg6
 local bgChange
+local house
 
 local retangle
 local trapeze
@@ -98,75 +99,6 @@ local function changeBackground()
 
 end
 
-local function createObstacle()
-    local whereFrom = math.random( 3 )
-
-    if( whereFrom == 1 ) then 
-        retangle = display.newImageRect("images/obstaculo-5.png", 45, 95 )
-        physics.addBody( retangle, "dynamic", { isSensor = true } )
-        retangle.gravityScale = 0
-        retangle.myName = "obstacle"
-
-        retangle.x = W+100
-        retangle.y = H-70
-        retangle:setLinearVelocity( -100, 0 )
-
-        sceneGroup:insert(retangle)
-        obstacleTable[#obstacleTable+1] = retangle
-
-    elseif( whereFrom == 2 ) then
-        trapeze = display.newImageRect( "images/obstaculo-4.png", 60, 40 )
-        physics.addBody( trapeze, "dynamic", { isSensor = true } )
-        trapeze.gravityScale = 0
-        trapeze.myName = "obstacle"
-
-        trapeze.x = W+100
-        trapeze.y = H-150
-        trapeze:setLinearVelocity( -150, 0 )
-
-        sceneGroup:insert(trapeze)
-        obstacleTable[#obstacleTable+1] = trapeze
-
-    elseif( whereFrom == 3 ) then
-        parallelogram = display.newImageRect( "images/obstaculo-3.png", 50, 80 )
-        physics.addBody( parallelogram, "dynamic", { radius = 25, isSensor = true } )
-        parallelogram.gravityScale = 0
-        parallelogram.myName = "obstacle"
-
-        parallelogram.x = W+100
-        parallelogram.y = H-250
-        parallelogram:setLinearVelocity( -200, 0 )
-
-        sceneGroup:insert(parallelogram)
-        obstacleTable[#obstacleTable+1] = parallelogram
-    end
-    
-    title:toFront()
-    title1:toFront()
-    start:toFront()
-    tutorial:toFront()
-    opt:toFront()
-end
-
-local function gameLoop()
-
-    createObstacle()
-
-    -- Remove obstacles
-    if( #obstacleTable ~= 0 ) then
-        for i = #obstacleTable, 1, -1  do
-            local thisObstacle = obstacleTable[i]
-
-            if ( ( thisObstacle.x < -100 ) or ( thisObstacle.x > W + 100 ) )
-            then
-                display.remove( thisObstacle )
-                table.remove( obstacleTable, i )
-            end
-        end
-    end
-
-end
-
 local function gotoPressToStart()
     -- audio.play(  )
     if( #obstacleTable ~= 0 ) then
@@ -233,7 +165,7 @@ function scene:create( event )
         bg2 = display.newImageRect("images/manha.png", 640, 320)
         bg2.x = X
         bg2.y = Y
-        bg2.alpha = 0
+        bg2.alpha = 0   
 
         bg3 = display.newImageRect("images/meio-dia.png", 640, 320)
         bg3.x = X
@@ -254,6 +186,11 @@ function scene:create( event )
         bg6.x = X
         bg6.y = Y
         bg6.alpha = 0
+
+        house = display.newImageRect("images/house.png", 100, 100)
+        house.x = X-200
+        house.y = Y+70
+        house.alpha = 1
 
         -------------------------------
         -------- SKY AND FLOOR --------
@@ -316,6 +253,7 @@ function scene:create( event )
         sceneGroup:insert(bg4)
         sceneGroup:insert(bg5)
         sceneGroup:insert(bg6)
+        sceneGroup:insert(house)
 
         sceneGroup:insert(title)
         sceneGroup:insert(title1)
@@ -334,15 +272,13 @@ function scene:show( event )
 
     if ( phase == "will" ) then
         
-        bgChange = timer.performWithDelay( 500, changeBackground, -1 )
-        gameLoopTimer = timer.performWithDelay( 2000, gameLoop, -1 )
+        bgChange = timer.performWithDelay( 1000, changeBackground, -1 )
         start:addEventListener( "touch", gotoPressToStart )
         opt:addEventListener( "touch", gotoPressToOption )
         tutorial:addEventListener( "touch", gotoTutorial )
 
     elseif ( phase == "did" ) then
-        -- Code here runs when the scene is entirely on screen
-        --audio.play( musicGame )
+
     end
 end
 
@@ -352,21 +288,17 @@ function scene:hide( event )
     local phase = event.phase
   
     if ( phase == "will" ) then
-      -- Code here runs when the scene is on screen (but is about to go off screen)
-        timer.cancel(gameLoopTimer)
         timer.cancel(bgChange)
   
     elseif ( phase == "did" ) then
-      -- Code here runs immediately after the scene goes entirely off screen
-      
+
     end
 end
 
 function scene:destroy( event )
   
     local sceneGroup = self.view
-    -- Code here runs prior to the removal of scene's view
-  
+
 end
 
 ----------------------------------------------------------
