@@ -178,6 +178,7 @@ local function gotoPressToStart()
 
         end
     end
+    audio.stop(1)
     composer.gotoScene( "game", { time=500, effect="crossFade" } )
   
 end

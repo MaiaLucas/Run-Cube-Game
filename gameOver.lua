@@ -2,7 +2,7 @@ local composer = require( "composer" )
 local scene = composer.newScene()
 
 math.randomseed( os.time() )
--- Set physics
+
 local physics = require("physics")
 physics.start()
 ----------------------------------------------------------
@@ -24,7 +24,8 @@ local gameOver
 ----------------------------------------------------------
 
 local function backToMenu()
-    -- audio.play(  )  
+    -- audio.stop( 2 )
+    audio.play( menumusic, {channel=1, loops=-1} )  
     composer.gotoScene( "menu", { time=500, effect="crossFade" } )
   
 end
@@ -72,6 +73,10 @@ function scene:show( event )
 
     if ( phase == "will" ) then
         back:addEventListener( "tap", backToMenu )
+        audio.stop(1)
+        audio.stop(3)
+        deathmusic = audio.loadSound( "sound/gameOver.wav" )
+        audio.play( deathmusic, {channel=2, loops=-1} )
 
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
@@ -86,7 +91,7 @@ function scene:hide( event )
   
     if ( phase == "will" ) then
       -- Code here runs when the scene is on screen (but is about to go off screen)
-
+        audio.stop(2)
   
     elseif ( phase == "did" ) then
       -- Code here runs immediately after the scene goes entirely off screen

@@ -47,7 +47,7 @@ local uiGroup = display.newGroup()
 local daysCount
 local ttlDays = 1
 local txDays = display.newText( "Day: " .. ttlDays, 0, 45, native.systemFont, 20 )
-txDays:setFillColor( 1 )
+txDays:setFillColor( 0 )
 
 display.setStatusBar( display.HiddenStatusBar )
 
@@ -266,9 +266,9 @@ local function gameLoop()
         end
 
         timer.cancel(gameLoopTimer)
-        delayLevelTimer = timer.performWithDelay(1000/velocity, startGameLoop, 1)
+        delayLevelTimer = timer.performWithDelay(900/velocity, startGameLoop, 1)
         pausarObstaculo = true
-        gameLoopTimer   = timer.performWithDelay(2500/velocity, gameLoop, 0)
+        gameLoopTimer   = timer.performWithDelay(1000/velocity, gameLoop, 0)
 
     end
         
@@ -392,8 +392,9 @@ local function days()
 end
 
 local function backToMenu()
-    -- audio.play(  )  
+      
     composer.gotoScene( "menu", { time=500, effect="crossFade" } )
+    audio.play(menumusic, {channel=1, loops=-1})
   
 end
 
@@ -548,6 +549,9 @@ function scene:show( event )
 
         Runtime:addEventListener( "collision", onCollision )
 
+        gamemusic = audio.loadSound( "sound/game.wav" )
+        audio.play( gamemusic, {channel=3, loops=-1} )
+
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
         --audio.play( musicGame )
@@ -566,6 +570,8 @@ function scene:hide( event )
         timer.cancel(daysCount)
         timer.cancel(lifeLoop)
 
+        audio.stop(3)
+    
         display.remove(txDays)
 
         button:removeEventListener( "tap", pushSquare )
