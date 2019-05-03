@@ -394,7 +394,7 @@ end
 local function backToMenu()
       
     composer.gotoScene( "menu", { time=500, effect="crossFade" } )
-    audio.play(menumusic, {channel=1, loops=-1})
+    audio.play(menumusic, {channel=1, loops=0})
   
 end
 
@@ -550,7 +550,7 @@ function scene:show( event )
         Runtime:addEventListener( "collision", onCollision )
 
         gamemusic = audio.loadSound( "sound/game.wav" )
-        audio.play( gamemusic, {channel=3, loops=-1} )
+        audio.play( gamemusic, {channel=3, loops=0} )
 
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen

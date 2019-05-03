@@ -25,7 +25,7 @@ local gameOver
 
 local function backToMenu()
     -- audio.stop( 2 )
-    audio.play( menumusic, {channel=1, loops=-1} )  
+    audio.play( menumusic, {channel=1, loops=0} )  
     composer.gotoScene( "menu", { time=500, effect="crossFade" } )
   
 end
@@ -76,7 +76,7 @@ function scene:show( event )
         audio.stop(1)
         audio.stop(3)
         deathmusic = audio.loadSound( "sound/gameOver.wav" )
-        audio.play( deathmusic, {channel=2, loops=-1} )
+        audio.play( deathmusic, {channel=2, loops=0} )
 
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen

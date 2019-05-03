@@ -8,6 +8,6 @@ audio.reserveChannels( 3 ) -- musica do jogo
 audio.reserveChannels( 4 ) -- musica de pulo
 
 menumusic = audio.loadSound( "sound/menu.wav" )
-audio.play( menumusic, {channel=1, loops=-1} )
+audio.play( menumusic, {channel=1, loops=0} )
 
 composer.gotoScene( "menu" )

@@ -127,7 +127,7 @@ local function soundOn()
         on.alpha  = 1
         off.alpha = 0
 
-        audio.play( menumusic, {channel=1, loops=-1} )
+        audio.play( menumusic, {channel=1, loops=0} )
     end
 end
 
