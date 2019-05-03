@@ -77,7 +77,7 @@ local contDias = dias*6
 
 local function pushSquare()
     square:applyLinearImpulse( 0, -0.05, square.x, square.y )
-    
+
 end
 
 local function changeSquare()
@@ -157,69 +157,6 @@ local function changeBackground()
 
 end
 
-local function createObstacle()
-    local whereFrom = math.random( 3 )
-    --whereFrom = 1
-
-    if( whereFrom == 1 ) then 
-
-        retangle = display.newImageRect("images/obstaculo-5.png", 45, 95 )
-        physics.addBody( retangle, "dynamic", { isSensor = true } )
-        retangle.gravityScale = 0
-        retangle.myName       = "obstacle"
-
-        retangle.x = W+100
-        retangle.y = H-70
-        retangle:setLinearVelocity( -200*velocity, 0 )
-
-        sceneGroup:insert(retangle)
-        obstacleTable[#obstacleTable+1] = retangle
-
-    elseif( whereFrom == 2 ) then
-
-        trapeze = display.newImageRect( "images/obstaculo-4.png", 60, 40 )
-        physics.addBody( trapeze, "dynamic", { isSensor = true } )
-        trapeze.gravityScale = 0
-        trapeze.myName       = "obstacle"
-
-        trapeze.x = W+100
-        trapeze.y = H-150
-        trapeze:setLinearVelocity( -200*velocity, 0 )
-
-        sceneGroup:insert(trapeze)
-        obstacleTable[#obstacleTable+1] = trapeze
-
-    elseif( whereFrom == 3 ) then
-
-        parallelogram = display.newImageRect( "images/obstaculo-3.png", 50, 80 )
-        physics.addBody( parallelogram, "dynamic", { radius = 25, isSensor = true } )
-        parallelogram.gravityScale = 0
-        parallelogram.myName       = "obstacle"
-
-        parallelogram.x = W+100
-        parallelogram.y = H-250
-        parallelogram:setLinearVelocity( -200*velocity, 0 )
-
-        sceneGroup:insert(parallelogram)
-        obstacleTable[#obstacleTable+1] = parallelogram
-    end
-    square:toFront()
-    back:toFront()
-end
-
-local function extraLife()
-    local extra = display.newImageRect("images/square/extra.png", 20, 20 )
-    physics.addBody( extra, "dynamic", { bounce = 0, isSensor = true } )
-    extra.gravityScale = 0
-    extra.myName       = "life"
-    extra.x = W+100
-    extra.y = H-math.random( 50, 200 )
-    extra:setLinearVelocity( -150, 0 )
-
-    sceneGroup:insert(extra)
-    obstacleTable[#obstacleTable+1] = extra
-end
-
 local function lifes()
 
     if( life == 4 ) then
@@ -246,6 +183,69 @@ local function lifes()
 
 end
 
+local function createObstacle()
+    local whereFrom = math.random( 3 )
+    --whereFrom = 1
+
+    if( whereFrom == 1 ) then 
+
+        retangle = display.newImageRect("images/obstaculo-5.png", 45, 95 )
+        physics.addBody( retangle, "dynamic", { isSensor = true } )
+        retangle.gravityScale = 0
+        retangle.myName       = "obstacle"
+
+        retangle.x = W+100
+        retangle.y = H-70
+        retangle:setLinearVelocity( -300*velocity, 0 )
+
+        sceneGroup:insert(retangle)
+        obstacleTable[#obstacleTable+1] = retangle
+
+    elseif( whereFrom == 2 ) then
+
+        trapeze = display.newImageRect( "images/obstaculo-4.png", 60, 40 )
+        physics.addBody( trapeze, "dynamic", { isSensor = true } )
+        trapeze.gravityScale = 0
+        trapeze.myName       = "obstacle"
+
+        trapeze.x = W+100
+        trapeze.y = H-150
+        trapeze:setLinearVelocity( -300*velocity, 0 )
+
+        sceneGroup:insert(trapeze)
+        obstacleTable[#obstacleTable+1] = trapeze
+
+    elseif( whereFrom == 3 ) then
+
+        parallelogram = display.newImageRect( "images/obstaculo-3.png", 50, 80 )
+        physics.addBody( parallelogram, "dynamic", { radius = 25, isSensor = true } )
+        parallelogram.gravityScale = 0
+        parallelogram.myName       = "obstacle"
+
+        parallelogram.x = W+100
+        parallelogram.y = H-250
+        parallelogram:setLinearVelocity( -300*velocity, 0 )
+
+        sceneGroup:insert(parallelogram)
+        obstacleTable[#obstacleTable+1] = parallelogram
+    end
+    square:toFront()
+    back:toFront()
+end
+
+local function extraLife()
+    local extra = display.newImageRect("images/square/extra.png", 20, 20 )
+    physics.addBody( extra, "dynamic", { bounce = 0, isSensor = true } )
+    extra.gravityScale = 0
+    extra.myName       = "life"
+    extra.x = W+100
+    extra.y = H-math.random( 50, 200 )
+    extra:setLinearVelocity( -150, 0 )
+
+    sceneGroup:insert(extra)
+    obstacleTable[#obstacleTable+1] = extra
+end
+
 local function startGameLoop()
     pausarObstaculo = false
    
@@ -266,9 +266,9 @@ local function gameLoop()
         end
 
         timer.cancel(gameLoopTimer)
-        delayLevelTimer = timer.performWithDelay(900/velocity, startGameLoop, 1)
+        delayLevelTimer = timer.performWithDelay(500/velocity, startGameLoop, 1)
         pausarObstaculo = true
-        gameLoopTimer   = timer.performWithDelay(1000/velocity, gameLoop, 0)
+        gameLoopTimer   = timer.performWithDelay(500/velocity, gameLoop, 0)
 
     end
         
@@ -480,7 +480,7 @@ function scene:create( event )
         square.isBullet = true
         square.alpha = 1
         square.myName = "square"
-        physics.addBody( square, "dynamic", { bounce = 0, isSensor = false } )
+        physics.addBody( square, "dynamic", { density = 0, isSensor = false } )
        
         ---------------------------------
         -------- BUTTON AND BACK --------
