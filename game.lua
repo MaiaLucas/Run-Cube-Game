@@ -78,6 +78,8 @@ local contDias = dias*6
 local function pushSquare()
     square:applyLinearImpulse( 0, -0.05, square.x, square.y )
 
+    jumpmusic = audio.loadSound( "sound/jump.wav" )
+    audio.play( jumpmusic, {channel=4, loops=1} )
 end
 
 local function changeSquare()
@@ -268,7 +270,7 @@ local function gameLoop()
         timer.cancel(gameLoopTimer)
         delayLevelTimer = timer.performWithDelay(500/velocity, startGameLoop, 1)
         pausarObstaculo = true
-        gameLoopTimer   = timer.performWithDelay(500/velocity, gameLoop, 0)
+        gameLoopTimer   = timer.performWithDelay(2500/velocity, gameLoop, 0)
 
     end
         
@@ -313,6 +315,9 @@ local function onCollision( event )
         if( life < 4 ) then
             life = life + 1
             lifes()
+            
+            lifeupmusic = audio.loadSound( "sound/lifeUp.wav" )
+            audio.play( lifeupmusic, {channel=6, loops=1} )
         end
 
         if(obj2.myName == "life") then 
@@ -342,9 +347,11 @@ local function onCollision( event )
 
         if ( died == false ) then
             died = true
-            --local l = timer.performWithDelay( 500, life - 1, -1 )
             life = life - 1
             lifes()
+
+            losemusic = audio.loadSound( "sound/life.wav" )
+            audio.play( losemusic, {channel=5, loops=1} )
 
             if(obj2.myName == "obstacle") then 
                 display.remove(obj2)
@@ -410,32 +417,32 @@ function scene:create( event )
     sceneGroup = self.view
         ----------------------------
         -------- BACKGROUND --------
-        bgAmanhecer = display.newImageRect("images/amanhecer.png", 600, 380)
+        bgAmanhecer = display.newImageRect("images/amanhecer.png", 680, 380)
         bgAmanhecer.x = X
         bgAmanhecer.y = Y
         bgAmanhecer.alpha = 1
 
-        bgManha = display.newImageRect("images/manha.png", 600, 380)
+        bgManha = display.newImageRect("images/manha.png", 680, 380)
         bgManha.x = X
         bgManha.y = Y
         bgManha.alpha = 0
 
-        bgMeioDia = display.newImageRect("images/meio-dia.png", 600, 380)
+        bgMeioDia = display.newImageRect("images/meio-dia.png", 680, 380)
         bgMeioDia.x = X
         bgMeioDia.y = Y
         bgMeioDia.alpha = 0
 
-        bgEntardecer = display.newImageRect("images/entardecer.png", 600, 380)
+        bgEntardecer = display.newImageRect("images/entardecer.png", 680, 380)
         bgEntardecer.x = X
         bgEntardecer.y = Y
         bgEntardecer.alpha = 0
 
-        bgAnoitecer = display.newImageRect("images/anoitecer.png", 600, 380)
+        bgAnoitecer = display.newImageRect("images/anoitecer.png", 680, 380)
         bgAnoitecer.x = X
         bgAnoitecer.y = Y
         bgAnoitecer.alpha = 0
 
-        bgNoite = display.newImageRect("images/noite.png", 600, 380)
+        bgNoite = display.newImageRect("images/noite.png", 680, 380)
         bgNoite.x = X
         bgNoite.y = Y
         bgNoite.alpha = 0
@@ -484,7 +491,7 @@ function scene:create( event )
        
         ---------------------------------
         -------- BUTTON AND BACK --------
-        button = display.newImageRect("images/placar.png", 600, 480)
+        button = display.newImageRect("images/placar.png", 680, 480)
         button.x = X
         button.y = Y
         button.myName = "button"
@@ -551,6 +558,7 @@ function scene:show( event )
 
         gamemusic = audio.loadSound( "sound/game.wav" )
         audio.play( gamemusic, {channel=3, loops=0} )
+        audio.setMaxVolume( 0.25, {channel=3} )
 
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
@@ -571,6 +579,9 @@ function scene:hide( event )
         timer.cancel(lifeLoop)
 
         audio.stop(3)
+        audio.stop(4)
+        audio.stop(5)
+        audio.stop(6)
     
         display.remove(txDays)
 
