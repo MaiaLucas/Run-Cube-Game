@@ -13,4 +13,4 @@ menumusic = audio.loadSound( "sound/menu.wav" )
 audio.play( menumusic, {channel=1, loops=0} )
 audio.setMaxVolume( 0.40, {channel=1} )
 
-composer.gotoScene( "menu" )
+composer.gotoScene( "game" )

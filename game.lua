@@ -26,10 +26,14 @@ local bgEntardecer
 local bgAnoitecer
 local bgNoite
 local bgChange
+local grass
 
 local retangle
 local trapeze
 local parallelogram
+local obs1
+local obs2
+local obs3
 
 local fullLife 
 local life3 
@@ -69,6 +73,7 @@ local died = false
 local hora = 0
 local dias = 5000
 local contDias = dias*6
+
 ----------------------------------------------------------
 
 ---------------------------
@@ -76,7 +81,8 @@ local contDias = dias*6
 ---------------------------
 
 local function pushSquare()
-    square:applyLinearImpulse( 0, -0.05, square.x, square.y )
+    --square:applyLinearImpulse( 0, -0.05, square.x, square.y )
+    square:setLinearVelocity( 0, -100 )
 
     jumpmusic = audio.loadSound( "sound/jump.wav" )
     audio.play( jumpmusic, {channel=4, loops=1} )
@@ -186,7 +192,7 @@ local function lifes()
 end
 
 local function createObstacle()
-    local whereFrom = math.random( 3 )
+    local whereFrom = math.random( 6 )
     --whereFrom = 1
 
     if( whereFrom == 1 ) then 
@@ -230,6 +236,47 @@ local function createObstacle()
 
         sceneGroup:insert(parallelogram)
         obstacleTable[#obstacleTable+1] = parallelogram
+    elseif( whereFrom == 4 ) then 
+
+        obs1 = display.newImageRect("images/obstaculo-6.png", 45, 95 )
+        physics.addBody( obs1, "dynamic", { isSensor = true } )
+        obs1.gravityScale = 0
+        obs1.myName       = "obstacle"
+
+        obs1.x = W+100
+        obs1.y = H-70
+        obs1:setLinearVelocity( -300*velocity, 0 )
+
+        sceneGroup:insert(obs1)
+        obstacleTable[#obstacleTable+1] = obs1
+
+    elseif( whereFrom == 5 ) then
+
+        obs2 = display.newImageRect( "images/obstaculo-7.png", 60, 40 )
+        physics.addBody( obs2, "dynamic", { isSensor = true } )
+        obs2.gravityScale = 0
+        obs2.myName       = "obstacle"
+
+        obs2.x = W+100
+        obs2.y = H-150
+        obs2:setLinearVelocity( -300*velocity, 0 )
+
+        sceneGroup:insert(obs2)
+        obstacleTable[#obstacleTable+1] = obs2
+
+    elseif( whereFrom == 6 ) then
+
+        obs3 = display.newImageRect( "images/obstaculo-8.png", 50, 80 )
+        physics.addBody( obs3, "dynamic", { radius = 25, isSensor = true } )
+        obs3.gravityScale = 0
+        obs3.myName       = "obstacle"
+
+        obs3.x = W+100
+        obs3.y = H-250
+        obs3:setLinearVelocity( -300*velocity, 0 )
+
+        sceneGroup:insert(obs3)
+        obstacleTable[#obstacleTable+1] = obs3
     end
     square:toFront()
     back:toFront()
@@ -251,6 +298,19 @@ end
 local function startGameLoop()
     pausarObstaculo = false
    
+end
+
+local function grassLooping()
+    grass = display.newImageRect("images/grass.png", 680, 30)
+    grass.x = X
+    grass.y = Y+140
+    grass.alpha = 1
+    grass.gravityScale = 0
+    physics.addBody( grass, "dynamic", { isSensor = false } )
+    grass:setLinearVelocity( -300, 0 )
+
+    sceneGroup:insert(grass)
+    obstacleTable[#obstacleTable+1] = grass
 end
 
 local function gameLoop()
@@ -486,9 +546,9 @@ function scene:create( event )
         square.y = Y+100
         square.isBullet = true
         square.alpha = 1
-        square.myName = "square"
-        physics.addBody( square, "dynamic", { density = 0, isSensor = false } )
-       
+        --square.myName = "square"
+        physics.addBody( square, "dynamic", { bounce = -0.005, isSensor = false } )
+
         ---------------------------------
         -------- BUTTON AND BACK --------
         button = display.newImageRect("images/placar.png", 680, 480)
@@ -510,6 +570,12 @@ function scene:create( event )
         floor.alpha = 0
         floor.name = "Floor"
         physics.addBody( floor, "static" )
+
+        floor2 = display.newRect( 130, 311, 1000, 10 )
+        floor2:setFillColor( 0 )
+        floor2.alpha = 1
+        floor2.name = "Floor"
+        physics.addBody( floor2, "static" )
         
         sky = display.newRect( 130, 1, 1000, 10 )
         sky:setFillColor( 0.7 )
@@ -549,9 +615,9 @@ function scene:show( event )
         bgChange = timer.performWithDelay( dias, changeBackground, -1 )
         gameLoopTimer = timer.performWithDelay( 1000/velocity, gameLoop, -1 )
         lifeLoop = timer.performWithDelay( 20000, extraLife, -1 )
-        
+  
         daysCount = timer.performWithDelay( contDias, days, -1 )
-        button:addEventListener( "tap", pushSquare )
+        button:addEventListener( "touch", pushSquare )
         back:addEventListener( "tap", backToMenu )
 
         Runtime:addEventListener( "collision", onCollision )
