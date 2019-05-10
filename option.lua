@@ -44,6 +44,8 @@ local function soundOff()
         audio.stop(1)
         audio.stop(2)
         audio.stop(3)
+
+        booleanSound = false
     end
 end
 
@@ -53,6 +55,8 @@ local function soundOn()
         off.alpha = 0
 
         audio.play( menumusic, {channel=1, loops=0} )
+
+        booleanSound = true
     end
 end
 
@@ -170,6 +174,15 @@ function scene:show( event )
         
         on:addEventListener( "tap", soundOff )
         off:addEventListener( "tap", soundOn )
+
+        if( booleanSound == false ) then
+            on.alpha  = 0
+            off.alpha = 1
+        elseif( booleanSound == true ) then
+            on.alpha  = 1
+            off.alpha = 0
+        end
+
 
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen

@@ -10,7 +10,11 @@ audio.reserveChannels( 5 ) -- musica de perca de vida
 audio.reserveChannels( 6 ) -- musica de ganho de vida
 
 menumusic = audio.loadSound( "sound/menu.wav" )
-audio.play( menumusic, {channel=1, loops=0} )
+audio.play( menumusic, {channel=1, loops=-1} )
 audio.setMaxVolume( 0.40, {channel=1} )
+audio.setMaxVolume( 0.40, {channel=2} )
+audio.setMaxVolume( 0.40, {channel=3} )
 
-composer.gotoScene( "game" )
+booleanSound = true
+
+composer.gotoScene( "menu" )

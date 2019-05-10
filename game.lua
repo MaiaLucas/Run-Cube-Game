@@ -6,7 +6,7 @@ math.randomseed( os.time() )
 -- Set physics
 local physics = require("physics")
 physics.start()
---physics.setDrawMode("hybrid")
+-- physics.setDrawMode("hybrid")
 
 ----------------------------------------------------------
 W = display.contentWidth  
@@ -226,7 +226,7 @@ local function createObstacle()
     elseif( whereFrom == 3 ) then
 
         parallelogram = display.newImageRect( "images/obstaculo-3.png", 50, 80 )
-        physics.addBody( parallelogram, "dynamic", { radius = 25, isSensor = true } )
+        physics.addBody( parallelogram, "dynamic", { isSensor = true } )
         parallelogram.gravityScale = 0
         parallelogram.myName       = "obstacle"
 
@@ -267,7 +267,7 @@ local function createObstacle()
     elseif( whereFrom == 6 ) then
 
         obs3 = display.newImageRect( "images/obstaculo-8.png", 50, 80 )
-        physics.addBody( obs3, "dynamic", { radius = 25, isSensor = true } )
+        physics.addBody( obs3, "dynamic", { isSensor = true } )
         obs3.gravityScale = 0
         obs3.myName       = "obstacle"
 
@@ -298,19 +298,6 @@ end
 local function startGameLoop()
     pausarObstaculo = false
    
-end
-
-local function grassLooping()
-    grass = display.newImageRect("images/grass.png", 680, 30)
-    grass.x = X
-    grass.y = Y+140
-    grass.alpha = 1
-    grass.gravityScale = 0
-    physics.addBody( grass, "dynamic", { isSensor = false } )
-    grass:setLinearVelocity( -300, 0 )
-
-    sceneGroup:insert(grass)
-    obstacleTable[#obstacleTable+1] = grass
 end
 
 local function gameLoop()
@@ -546,7 +533,7 @@ function scene:create( event )
         square.y = Y+100
         square.isBullet = true
         square.alpha = 1
-        --square.myName = "square"
+        square.myName = "square"
         physics.addBody( square, "dynamic", { bounce = -0.005, isSensor = false } )
 
         ---------------------------------
@@ -570,12 +557,6 @@ function scene:create( event )
         floor.alpha = 0
         floor.name = "Floor"
         physics.addBody( floor, "static" )
-
-        floor2 = display.newRect( 130, 311, 1000, 10 )
-        floor2:setFillColor( 0 )
-        floor2.alpha = 1
-        floor2.name = "Floor"
-        physics.addBody( floor2, "static" )
         
         sky = display.newRect( 130, 1, 1000, 10 )
         sky:setFillColor( 0.7 )
@@ -623,8 +604,7 @@ function scene:show( event )
         Runtime:addEventListener( "collision", onCollision )
 
         gamemusic = audio.loadSound( "sound/game.wav" )
-        audio.play( gamemusic, {channel=3, loops=0} )
-        audio.setMaxVolume( 0.25, {channel=3} )
+        audio.play( gamemusic, {channel=3, loops=-1} )
 
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
@@ -651,7 +631,7 @@ function scene:hide( event )
     
         display.remove(txDays)
 
-        button:removeEventListener( "tap", pushSquare )
+        -- button:removeEventListener( "tap", pushSquare )
   
     elseif ( phase == "did" ) then
       -- Code here runs immediately after the scene goes entirely off screen

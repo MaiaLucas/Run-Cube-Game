@@ -30,7 +30,6 @@ local tutorial
 
 local btnStart
 local opt
-
 ----------------------------------------------------------
 ----------------------------------------------------------
 ----------------------------------------------------------
@@ -162,9 +161,6 @@ function scene:hide( event )
     local phase = event.phase
   
     if ( phase == "will" ) then
-        start:removeEventListener( "touch", gotoPressToStart )
-        opt:removeEventListener( "touch", gotoPressToOption )
-        tutorial:removeEventListener( "touch", gotoTutorial )
   
     elseif ( phase == "did" ) then
 
