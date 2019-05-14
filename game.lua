@@ -429,6 +429,7 @@ local function onCollision( event )
 
                 button:removeEventListener( "tap", pushSquare )
 
+                composer.setVariable( "finalScore", ttlDays )
                 composer.gotoScene( "gameOver", { time=500, effect="crossFade" } )
                 --local txt = display.newText( "GAME OVER", X, 150, native.systemFont, 30 )
             else
@@ -464,32 +465,32 @@ function scene:create( event )
     sceneGroup = self.view
         ----------------------------
         -------- BACKGROUND --------
-        bgAmanhecer = display.newImageRect("images/amanhecer.png", 680, 380)
+        bgAmanhecer = display.newImageRect("images/amanhecer.PNG", 680, 380)
         bgAmanhecer.x = X
         bgAmanhecer.y = Y
         bgAmanhecer.alpha = 1
 
-        bgManha = display.newImageRect("images/manha.png", 680, 380)
+        bgManha = display.newImageRect("images/manha.PNG", 680, 380)
         bgManha.x = X
         bgManha.y = Y
         bgManha.alpha = 0
 
-        bgMeioDia = display.newImageRect("images/meio-dia.png", 680, 380)
+        bgMeioDia = display.newImageRect("images/meio-dia.PNG", 680, 380)
         bgMeioDia.x = X
         bgMeioDia.y = Y
         bgMeioDia.alpha = 0
 
-        bgEntardecer = display.newImageRect("images/entardecer.png", 680, 380)
+        bgEntardecer = display.newImageRect("images/entardecer.PNG", 680, 380)
         bgEntardecer.x = X
         bgEntardecer.y = Y
         bgEntardecer.alpha = 0
 
-        bgAnoitecer = display.newImageRect("images/anoitecer.png", 680, 380)
+        bgAnoitecer = display.newImageRect("images/anoitecer.PNG", 680, 380)
         bgAnoitecer.x = X
         bgAnoitecer.y = Y
         bgAnoitecer.alpha = 0
 
-        bgNoite = display.newImageRect("images/noite.png", 680, 380)
+        bgNoite = display.newImageRect("images/noite.PNG", 680, 380)
         bgNoite.x = X
         bgNoite.y = Y
         bgNoite.alpha = 0
@@ -630,8 +631,6 @@ function scene:hide( event )
         audio.stop(6)
     
         display.remove(txDays)
-
-        -- button:removeEventListener( "tap", pushSquare )
   
     elseif ( phase == "did" ) then
       -- Code here runs immediately after the scene goes entirely off screen

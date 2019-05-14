@@ -77,7 +77,7 @@ function scene:create( event )
 
         ----------------------------
         -------- BACKGROUND --------
-        bg3 = display.newImageRect("images/meio-dia.png", 680, 380)
+        bg3 = display.newImageRect("images/meio-dia.PNG", 680, 380)
         bg3.x = X
         bg3.y = Y
         bg3.alpha = 1

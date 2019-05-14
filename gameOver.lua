@@ -40,30 +40,30 @@ end
 composer.recycleOnSceneChange = true;
 function scene:create( event )
     sceneGroup = self.view
+    
+    ----------------------------
+    -------- BACKGROUND --------
+    bg1 = display.newImageRect("images/game-over.png", 600, 380)
+    bg1.x = X
+    bg1.y = Y
+    bg1.alpha = 1
 
-        ----------------------------
-        -------- BACKGROUND --------
-        bg1 = display.newImageRect("images/game-over.png", 600, 380)
-        bg1.x = X
-        bg1.y = Y
-        bg1.alpha = 1
+    ----------------------
+    -------- BACK --------
 
-        ----------------------
-        -------- BACK --------
+    back = display.newImageRect( "images/back.png", 50, 30 )
+    back.x = X
+    back.y = Y+120
 
-        back = display.newImageRect( "images/back.png", 50, 30 )
-        back.x = X
-        back.y = Y+120
+    gameOver = display.newImageRect( "images/gameOver.png", 300, 150 )
+    gameOver.x = X
+    gameOver.y = Y-50
 
-        gameOver = display.newImageRect( "images/gameOver.png", 300, 150 )
-        gameOver.x = X
-        gameOver.y = Y-50
-
-        ------------------------
-        -------- INSERT --------
-        sceneGroup:insert(bg1)
-        sceneGroup:insert(back)
-        sceneGroup:insert(gameOver)
+    ------------------------
+    -------- INSERT --------
+    sceneGroup:insert(bg1)
+    sceneGroup:insert(back)
+    sceneGroup:insert(gameOver)
 
 end
 
