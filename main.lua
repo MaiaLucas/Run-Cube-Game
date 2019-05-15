@@ -11,10 +11,8 @@ audio.reserveChannels( 6 ) -- musica de ganho de vida
 
 menumusic = audio.loadSound( "sound/menu.wav" )
 audio.play( menumusic, {channel=1, loops=-1} )
-audio.setMaxVolume( 0.40, {channel=1} )
+audio.setMaxVolume( 0.20, {channel=1} )
 audio.setMaxVolume( 0.40, {channel=2} )
 audio.setMaxVolume( 0.40, {channel=3} )
-
-booleanSound = true
 
 composer.gotoScene( "menu" )

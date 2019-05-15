@@ -41,9 +41,9 @@ local function soundOff()
         on.alpha  = 0
         off.alpha = 1
 
-        audio.stop(1)
-        audio.stop(2)
-        audio.stop(3)
+        -- audio.stop(1)
+        -- audio.stop(2)
+        -- audio.stop(3)
 
         booleanSound = false
     end
@@ -54,7 +54,7 @@ local function soundOn()
         on.alpha  = 1
         off.alpha = 0
 
-        audio.play( menumusic, {channel=1, loops=0} )
+        -- audio.play( menumusic, {channel=1, loops=0} )
 
         booleanSound = true
     end
@@ -181,6 +181,13 @@ function scene:show( event )
         elseif( booleanSound == true ) then
             on.alpha  = 1
             off.alpha = 0
+
+            audio.stop(1)
+            audio.stop(2)
+            audio.stop(3)
+            audio.stop(4)
+            audio.stop(5)
+            audio.stop(6)
         end
 
 

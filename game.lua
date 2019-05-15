@@ -51,7 +51,7 @@ local uiGroup = display.newGroup()
 local daysCount
 local ttlDays = 1
 local txDays = display.newText( "Day: " .. ttlDays, 0, 45, native.systemFont, 20 )
-txDays:setFillColor( 0 )
+txDays:setFillColor( 1 )
 
 display.setStatusBar( display.HiddenStatusBar )
 

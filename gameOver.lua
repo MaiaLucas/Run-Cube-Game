@@ -25,7 +25,7 @@ local gameOver
 
 local function backToMenu()
     -- audio.stop( 2 )
-    -- audio.play( menumusic, {channel=1, loops=0} )  
+    audio.play( menumusic, {channel=1, loops=-1} )  
     composer.gotoScene( "menu", { time=500, effect="crossFade" } )
   
 end
@@ -43,7 +43,7 @@ function scene:create( event )
     
     ----------------------------
     -------- BACKGROUND --------
-    bg1 = display.newImageRect("images/game-over.png", 600, 380)
+    bg1 = display.newImageRect("images/game-over.png", 680, 380)
     bg1.x = X
     bg1.y = Y
     bg1.alpha = 1
@@ -73,7 +73,7 @@ function scene:show( event )
 
     if ( phase == "will" ) then
         back:addEventListener( "tap", backToMenu )
-        audio.stop(1)
+        -- audio.stop(1)
         audio.stop(3)
         deathmusic = audio.loadSound( "sound/gameOver.wav" )
         audio.play( deathmusic, {channel=2, loops=-1} )

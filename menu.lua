@@ -40,8 +40,16 @@ local function gotoPressToStart()
     composer.gotoScene( "game", { time=500, effect="crossFade" } )
 end
 
-local function gotoPressToOption()
-    composer.gotoScene( "option", { time=500, effect="crossFade" } )
+-- local function gotoPressToOption()
+--     composer.gotoScene( "option", { time=500, effect="crossFade" } )
+-- end
+
+local function gotoPressToCredit()
+    composer.gotoScene( "credits", { time=500, effect="crossFade" } )
+end
+
+local function exitGame()
+    os.exit()
 end
 
 local function gotoTutorial()
@@ -117,12 +125,26 @@ function scene:create( event )
         physics.addBody( start, "static", { isSensor = false } )
         start:toFront()
 
-        opt = display.newImageRect("images/option.png", 30, 30)
-        opt.x = X+260
-        opt.y = Y-135
-        opt.alpha = 1
-        physics.addBody( opt, "static", { isSensor = false } )
-        opt:toFront()
+        -- opt = display.newImageRect("images/option.png", 30, 30)
+        -- opt.x = X+260
+        -- opt.y = Y-135
+        -- opt.alpha = 1
+        -- physics.addBody( opt, "static", { isSensor = false } )
+        -- opt:toFront()
+
+        credit = display.newImageRect("images/credits.png", 100, 20)
+        credit.x = X-220
+        credit.y = Y-135
+        credit.alpha = 1
+        physics.addBody( credit, "static", { isSensor = false } )
+        credit:toFront()
+
+        exit = display.newImageRect("images/exit.png", 50, 20)
+        exit.x = X+250
+        exit.y = Y-135
+        exit.alpha = 1
+        physics.addBody( exit, "static", { isSensor = false } )
+        exit:toFront()
 
         ------------------------
         -------- INSERT --------
@@ -133,7 +155,9 @@ function scene:create( event )
         sceneGroup:insert(title1)
         sceneGroup:insert(start)
         sceneGroup:insert(tutorial)
-        sceneGroup:insert(opt)
+        -- sceneGroup:insert(opt)
+        sceneGroup:insert(credit)
+        sceneGroup:insert(exit)
 
         sceneGroup:insert(sky)
         sceneGroup:insert(floor)
@@ -147,7 +171,9 @@ function scene:show( event )
     if ( phase == "will" ) then
 
         start:addEventListener( "touch", gotoPressToStart )
-        opt:addEventListener( "touch", gotoPressToOption )
+        -- opt:addEventListener( "touch", gotoPressToOption )
+        credit:addEventListener( "touch", gotoPressToCredit )
+        exit:addEventListener( "touch", exitGame )
         tutorial:addEventListener( "touch", gotoTutorial )
 
     elseif ( phase == "did" ) then
