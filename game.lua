@@ -319,7 +319,7 @@ local function gameLoop()
         timer.cancel(gameLoopTimer)
         delayLevelTimer = timer.performWithDelay(500/velocity, startGameLoop, 1)
         pausarObstaculo = true
-        gameLoopTimer   = timer.performWithDelay(2500/velocity, gameLoop, 0)
+        gameLoopTimer   = timer.performWithDelay(1000/velocity, gameLoop, 0)
 
     end
         
@@ -359,6 +359,36 @@ local function onCollision( event )
     local obj2 = event.object2
 
     -- Quando pega vida
+    if ( ( obj1.myName == "square" and obj2.myName == "Sky" ) or ( obj1.myName == "Sky" and obj2.myName == "square" ) ) then
+    
+        if ( died == false ) then
+            died = true
+            life = life - 1
+            lifes()
+
+            losemusic = audio.loadSound( "sound/life.wav" )
+            audio.play( losemusic, {channel=5, loops=1} )
+
+            if( life == 0 ) then
+
+                button:removeEventListener( "tap", pushSquare )
+                display.remove(obj1)
+                display.remove(obj2)
+                
+                timer.cancel(gameLoopTimer)
+                timer.cancel(bgChange)
+                timer.cancel(daysCount)
+
+                composer.setVariable( "finalScore", ttlDays )
+                composer.gotoScene( "gameOver", { time=1000, effect="crossFade" } )
+                --local txt = display.newText( "GAME OVER", X, 150, native.systemFont, 30 )
+            else
+                square.alpha = 1
+                timer.performWithDelay( 1000, restoreSquare )
+            end
+        end
+    end
+
     if ( ( obj1.myName == "square" and obj2.myName == "life" ) or ( obj1.myName == "life" and obj2.myName == "square" ) ) then
 
         if( life < 4 ) then
@@ -561,10 +591,10 @@ function scene:create( event )
         floor.name = "Floor"
         physics.addBody( floor, "static" )
         
-        sky = display.newRect( 130, 1, 1000, 10 )
+        sky = display.newRect( 130, -15, 1000, 10 )
         sky:setFillColor( 0.7 )
-        sky.alpha = 0
-        sky.name = "Sky"
+        sky.alpha = 1
+        sky.myName = "Sky"
         physics.addBody( sky, "static" )
 
         ------------------------
@@ -597,7 +627,7 @@ function scene:show( event )
     if ( phase == "will" ) then
 
         bgChange = timer.performWithDelay( dias, changeBackground, -1 )
-        gameLoopTimer = timer.performWithDelay( 1000/velocity, gameLoop, -1 )
+        gameLoopTimer = timer.performWithDelay( 900/velocity, gameLoop, -1 )
         lifeLoop = timer.performWithDelay( 20000, extraLife, -1 )
   
         daysCount = timer.performWithDelay( contDias, days, -1 )
