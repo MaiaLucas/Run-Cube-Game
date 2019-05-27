@@ -82,8 +82,10 @@ local contDias = dias*6
 
 local function pushSquare()
     --square:applyLinearImpulse( 0, -0.05, square.x, square.y )
-    square:setLinearVelocity( 0, -100 )
-
+    if( life > 0 ) then 
+        square:setLinearVelocity( 0, -100 )
+    end
+    
     jumpmusic = audio.loadSound( "sound/jump.wav" )
     audio.play( jumpmusic, {channel=4, loops=1} )
 end
@@ -420,6 +422,8 @@ local function onCollision( event )
             end
 
             if( life == 0 ) then
+
+                button:removeEventListener( "tap", pushSquare )
                 display.remove(obj1)
                 display.remove(obj2)
                 
@@ -427,10 +431,8 @@ local function onCollision( event )
                 timer.cancel(bgChange)
                 timer.cancel(daysCount)
 
-                button:removeEventListener( "tap", pushSquare )
-
                 composer.setVariable( "finalScore", ttlDays )
-                composer.gotoScene( "gameOver", { time=500, effect="crossFade" } )
+                composer.gotoScene( "gameOver", { time=1000, effect="crossFade" } )
                 --local txt = display.newText( "GAME OVER", X, 150, native.systemFont, 30 )
             else
                 square.alpha = 1
@@ -619,11 +621,15 @@ function scene:hide( event )
     local phase = event.phase
   
     if ( phase == "will" ) then
+
+        button:removeEventListener( "tap", pushSquare )
       -- Code here runs when the scene is on screen (but is about to go off screen)
         timer.cancel(gameLoopTimer)
         timer.cancel(bgChange)
         timer.cancel(daysCount)
         timer.cancel(lifeLoop)
+
+        
 
         audio.stop(3)
         audio.stop(4)
